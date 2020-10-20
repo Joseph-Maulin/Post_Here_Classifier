@@ -1,7 +1,8 @@
 
 import keras
 from tensorflow.keras.preprocessing import sequence
-import csv
+import unicodecsv as csv
+from io import BytesIO
 
 
 class Model:
@@ -9,21 +10,25 @@ class Model:
     def __init__(self, model_location="model/post_here_classifier.h5"):
         self.model = keras.models.load_model(model_location)
 
-        with open("data/word_to_id.csv", "r") as file:
-            reader = csv.reader(file)
-            self.word_to_id = {rows[0]:rows[1] for rows in reader}
+        with open("data/id_to_word.csv", "rb") as f:
+            reader = csv.reader(f, encoding="utf-8")
+            self.id_to_word = {}
+            self.id_to_word = {int(rows[0]):rows[1] for rows in reader}
 
-        with open("subreddit_mapper.csv", "r") as file:
-          reader = csv.reader(file)
-          subreddit_mapper = {rows[0]:rows[1] for rows in reader}
-          self.subreddit_mapper = {v:k for k,v in subreddit_mapper.items()}
+        with open("data/subreddit_mapper.csv", "rb") as f:
+          reader = csv.reader(f, encoding="utf-8")
+          self.subreddits = {}
+          self.subreddits = {rows[0]:int(rows[1]) for rows in reader}
+
+        self.id_to_word[0] = '<PAD>'
+        self.word_to_id = {i:k for k,i in self.id_to_word.items()}
 
 
-    def tokenize(words, word_to_id):
+    def tokenize(self, words):
         token_ids = []
         for word in words.split(" "):
-            if word in word_to_id.keys():
-                token_ids.append(word_to_id[word])
+            if word in self.word_to_id.keys():
+                token_ids.append(self.word_to_id[word])
             else:
                 token_ids.append(1)
 
@@ -43,7 +48,7 @@ class Model:
                 if l:
                     clean_post += chr.lower()
 
-        post_ids = self.tokenize(clean_post, self.word_to_id)
+        post_ids = self.tokenize(clean_post)
         self.post_ids_padded = sequence_pad_sequences(post_ids, maxlen=300)
 
 
@@ -56,7 +61,7 @@ class Model:
     def get_subreddit_probas(self):
         self.subreddit_probas = {}
         for i in range(len(self.prediction)):
-            self.subreddit_probas[self.subreddit_mapper[i]] = self.prediction[i]
+            self.subreddit_probas[self.subreddits[i]] = self.prediction[i]
 
         return self.subreddit_probas
 

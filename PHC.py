@@ -11,7 +11,6 @@ from sklearn.model_selection import train_test_split
 # import tensorflow
 import os
 import datetime
-import csv
 import unicodecsv as csv
 from io import BytesIO
 
@@ -63,7 +62,7 @@ class Post_Here_Classifier:
               self.subreddits = {}
               self.subreddits = {rows[0]:int(rows[1]) for rows in reader}
 
-            # self.split_and_pad_train_test()
+            self.split_and_pad_train_test()
 
             self.id_to_word[0] = '<PAD>'
             self.word_to_id = {i:k for k,i in self.id_to_word.items()}
