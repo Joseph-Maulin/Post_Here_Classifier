@@ -3,7 +3,7 @@ import re
 from collections import Counter
 import numpy as np
 from sklearn.model_selection import train_test_split
-from keras.preprocessing import sequence
+# from keras.preprocessing import sequence
 # from tensorflow.keras.callbacks import EarlyStopping
 # from tensorflow.keras.layers import Dropout, Dense, Embedding, LSTM
 # from tensorflow.keras.models import Sequential
@@ -12,6 +12,8 @@ from keras.preprocessing import sequence
 import os
 import datetime
 import csv
+import unicodecsv as csv
+from io import BytesIO
 
 
 class Post_Here_Classifier:
@@ -29,42 +31,50 @@ class Post_Here_Classifier:
 
             # clean and join "title" and "selftext"
             self.prepare_data()
-            print(self.df.head())
 
             # get corpus of posts
             self.get_corpus()
-            print(len(self.corpus))
 
             # limit corpus to most popular words
             self.get_max_words()
-            print(len(self.word_to_id))
             # tokenize
             self.tokenize_words()
 
             # set subbreddit ids
             self.set_subreddit_ids()
-            print(self.df.head())
 
             # save clean_df to csv
             self.save_df()
 
-            # split_and_pad_train_test
-            self.split_and_pad_train_test()
+            # # split_and_pad_train_test
+            # self.split_and_pad_train_test()
 
             # save csv_data
             self.save_csv_data()
 
         else:
-            with open("data/word_to_id.csv", "r") as file:
-                reader = csv.reader(file)
-                self.word_to_id = {rows[0]:rows[1] for rows in reader}
+            with open("data/word_to_id.csv", "rb") as f:
+                reader = csv.reader(f, encoding="utf-8")
+                self.word_to_id = {}
+                for row in reader:
+                    self.word_to_id = {rows[0]:int(rows[1]) for rows in reader}
 
-            with open("subreddit_mapper.csv", "r") as file:
-              reader = csv.reader(file)
-              subreddit_mapper = {rows[0]:rows[1] for rows in reader}
-              self.subreddit_mapper = {v:k for k,v in subreddit_mapper.items()}
+            # with open("data/subreddit_mapper.csv", "r") as file:
+            #   reader = csv.reader(file, delimiter=",")
+            #   subreddit_mapper = {rows[0]:int(rows[1]) for rows in reader if len(rows)==2}
+            #   self.subreddits = {v:k for k,v in subreddit_mapper.items()}
 
+            # self.split_and_pad_train_test()
 
+            # print(len(self.subreddits))
+            print(len(self.word_to_id))
+            print(max(self.word_to_id.values()))
+            # self.id_to_word = {i:k for k,i in self.word_to_id.items()}
+            #
+            # print(self.id_to_word[3])
+
+            # for i in range(1, 11995):
+            #     t = self.id_to_word[i]
 
     def save_df(self):
         self.df.to_csv("data/prepared_reddit_frame.csv", index=False)
@@ -120,7 +130,7 @@ class Post_Here_Classifier:
         self.id_to_word[1] = '<UNK>'
 
         for i in range(2, len(highest)+2):
-            self.id_to_word[i] = highest[i-2][0]
+            self.id_to_word[i] = re.sub("\n+|\s+", "", highest[i-2][0])
 
         # create word to id for words
         self.word_to_id = {v:k for k,v in self.id_to_word.items()}
@@ -192,16 +202,26 @@ class Post_Here_Classifier:
 
     def save_csv_data(self):
 
-        with open("data/subreddit_mapper.csv", "w") as f:
-            for key in self.subreddits.keys():
-                f.write("%s,%s\n"%(key, self.subreddits[key]))
+        # print(self.subreddits)
+        self.save_length = len(self.word_to_id)
+        print(self.save_length)
+        print(max(self.word_to_id.values()))
+        # for i,k in self.word_to_id.items():
+        #     print(i,k)
+        # return
 
-        with open('data/word_to_id.csv', 'w') as f:
+        with open("data/subreddit_mapper.csv", "wb") as f:
+            writer = csv.writer(f, encoding="utf-8")
+            for key in self.subreddits.keys():
+                writer.writerow([key,self.subreddits[key]])
+
+        with open("data/word_to_id.csv", "wb") as f:
+            writer = csv.writer(f, encoding="utf-8")
             for key in self.word_to_id.keys():
-                f.write("%s,%s\n"%(key, self.word_to_id[key]))
+                writer.writerow([key,self.word_to_id[key]])
 
 
 if __name__ == "__main__":
     phc = Post_Here_Classifier(file="data/test_reddit_frame.csv")
-    # phc = Post_Here_Classifier(file="data/prepared_reddit_frame.csv")
-    phc.create_model()
+    phc = Post_Here_Classifier(file="data/prepared_reddit_frame.csv")
+    # phc.create_model()
