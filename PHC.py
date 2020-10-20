@@ -67,8 +67,8 @@ class Post_Here_Classifier:
             # self.split_and_pad_train_test()
 
             # print(len(self.subreddits))
-            print(len(self.word_to_id))
-            print(max(self.word_to_id.values()))
+            # print(len(self.word_to_id))
+            # print(max(self.word_to_id.values()))
             # self.id_to_word = {i:k for k,i in self.word_to_id.items()}
             #
             # print(self.id_to_word[3])
@@ -134,6 +134,14 @@ class Post_Here_Classifier:
 
         # create word to id for words
         self.word_to_id = {v:k for k,v in self.id_to_word.items()}
+        self.id_to_word = {k:v for v,k in self.word_to_id.items()}
+
+        word_cache = []
+        for word in self.id_to_word.values():
+            if word not in word_cache:
+                word_cache.append(word)
+            else:
+                print(word)
 
 
     def tokenize(self, words):
@@ -203,9 +211,9 @@ class Post_Here_Classifier:
     def save_csv_data(self):
 
         # print(self.subreddits)
-        self.save_length = len(self.word_to_id)
-        print(self.save_length)
-        print(max(self.word_to_id.values()))
+        # self.save_length = len(self.word_to_id)
+        # print(self.save_length)
+        # print(max(self.word_to_id.values()))
         # for i,k in self.word_to_id.items():
         #     print(i,k)
         # return
