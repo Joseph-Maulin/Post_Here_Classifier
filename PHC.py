@@ -225,23 +225,25 @@ class Post_Here_Classifier:
             for key in self.id_to_word.keys():
                 writer.writerow([key,self.id_to_word[key]])
 
-        # testing
+        # # testing saving and loading parity
         # with open("data/id_to_word.csv", "rb") as f:
         #     reader = csv.reader(f, encoding="utf-8")
         #     self.id_to_word_r = {}
         #     for row in reader:
         #         self.id_to_word_r = {int(rows[0]):rows[1] for rows in reader}
         #
-        #
+        # problem_keys = []
         # for n in self.id_to_word.keys():
         #     try:
-        #         self.id_to_word_r[n]
+        #         if self.id_to_word_r[n] != self.id_to_word[n]:
+        #             problem_keys.append(n)
         #
         #     except:
         #         print(n)
-
+        #
+        # print(problem_keys)
 
 if __name__ == "__main__":
     phc = Post_Here_Classifier(file="data/test_reddit_frame.csv")
-    phc = Post_Here_Classifier(file="data/prepared_reddit_frame.csv")
+    # phc = Post_Here_Classifier(file="data/prepared_reddit_frame.csv")
     # phc.create_model()
