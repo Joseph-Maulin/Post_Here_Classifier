@@ -53,28 +53,25 @@ class Post_Here_Classifier:
             self.save_csv_data()
 
         else:
-            with open("data/word_to_id.csv", "rb") as f:
+            with open("data/id_to_word.csv", "rb") as f:
                 reader = csv.reader(f, encoding="utf-8")
-                self.word_to_id = {}
-                for row in reader:
-                    self.word_to_id = {rows[0]:int(rows[1]) for rows in reader}
+                self.id_to_word = {}
+                self.id_to_word = {int(rows[0]):rows[1] for rows in reader}
 
-            # with open("data/subreddit_mapper.csv", "r") as file:
-            #   reader = csv.reader(file, delimiter=",")
-            #   subreddit_mapper = {rows[0]:int(rows[1]) for rows in reader if len(rows)==2}
-            #   self.subreddits = {v:k for k,v in subreddit_mapper.items()}
+            with open("data/subreddit_mapper.csv", "rb") as f:
+              reader = csv.reader(f, encoding="utf-8")
+              self.subreddits = {}
+              self.subreddits = {rows[0]:int(rows[1]) for rows in reader}
 
             # self.split_and_pad_train_test()
 
-            # print(len(self.subreddits))
-            # print(len(self.word_to_id))
-            # print(max(self.word_to_id.values()))
-            # self.id_to_word = {i:k for k,i in self.word_to_id.items()}
-            #
-            # print(self.id_to_word[3])
+            self.id_to_word[0] = '<PAD>'
+            self.word_to_id = {i:k for k,i in self.id_to_word.items()}
 
-            # for i in range(1, 11995):
-            #     t = self.id_to_word[i]
+
+            print(len(self.id_to_word), len(self.word_to_id), len(self.subreddits))
+
+
 
     def save_df(self):
         self.df.to_csv("data/prepared_reddit_frame.csv", index=False)
@@ -211,22 +208,37 @@ class Post_Here_Classifier:
     def save_csv_data(self):
 
         # print(self.subreddits)
-        # self.save_length = len(self.word_to_id)
-        # print(self.save_length)
-        # print(max(self.word_to_id.values()))
-        # for i,k in self.word_to_id.items():
-        #     print(i,k)
-        # return
+        print(len(self.id_to_word), len(self.word_to_id), len(self.subreddits))
+        # for i in range(11994):
+        #     try:
+        #         self.id_to_word[i]
+        #     except:
+        #         print(i)
 
         with open("data/subreddit_mapper.csv", "wb") as f:
             writer = csv.writer(f, encoding="utf-8")
             for key in self.subreddits.keys():
                 writer.writerow([key,self.subreddits[key]])
 
-        with open("data/word_to_id.csv", "wb") as f:
+        with open("data/id_to_word.csv", "wb") as f:
             writer = csv.writer(f, encoding="utf-8")
-            for key in self.word_to_id.keys():
-                writer.writerow([key,self.word_to_id[key]])
+            for key in self.id_to_word.keys():
+                writer.writerow([key,self.id_to_word[key]])
+
+        # testing
+        # with open("data/id_to_word.csv", "rb") as f:
+        #     reader = csv.reader(f, encoding="utf-8")
+        #     self.id_to_word_r = {}
+        #     for row in reader:
+        #         self.id_to_word_r = {int(rows[0]):rows[1] for rows in reader}
+        #
+        #
+        # for n in self.id_to_word.keys():
+        #     try:
+        #         self.id_to_word_r[n]
+        #
+        #     except:
+        #         print(n)
 
 
 if __name__ == "__main__":
