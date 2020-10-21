@@ -3,25 +3,43 @@ import keras
 from tensorflow.keras.preprocessing import sequence
 import unicodecsv as csv
 from io import BytesIO
+import re
+import numpy as np
+import pandas as pd
+from collections import Counter
 
 
 class Model:
 
-    def __init__(self, model_location="model/post_here_classifier.h5"):
+    def __init__(self, model_location="model/post_here_classifier"):
         self.model = keras.models.load_model(model_location)
+        # self.model.summary()
 
-        with open("data/id_to_word.csv", "rb") as f:
+        with open("model/id_to_word.csv", "rb") as f:
             reader = csv.reader(f, encoding="utf-8")
-            self.id_to_word = {}
-            self.id_to_word = {int(rows[0]):rows[1] for rows in reader}
+            id_to_word = {}
+            id_to_word = {int(rows[0]):rows[1] for rows in reader}
 
-        with open("data/subreddit_mapper.csv", "rb") as f:
+        with open("model/subreddit_mapper.csv", "rb") as f:
           reader = csv.reader(f, encoding="utf-8")
           self.subreddits = {}
           self.subreddits = {rows[0]:int(rows[1]) for rows in reader}
 
-        self.id_to_word[0] = '<PAD>'
-        self.word_to_id = {i:k for k,i in self.id_to_word.items()}
+        self.subreddit_mapper = {i:k for k,i in self.subreddits.items()}
+
+        id_to_word[0] = '<PAD>'
+        self.word_to_id = {i:k for k,i in id_to_word.items()}
+
+
+        # this fixes a '\n' issue I have with this model. A new model with PHC.py can be trained on reddit_posts_4M
+        keys_to_add = {}
+        for key in self.word_to_id.keys():
+            if "<NEWLINEMARKER>" in key:
+                keys_to_add[re.sub("<NEWLINEMARKER>", "\n", key)] = [self.word_to_id[key], key]
+
+        for i,k in keys_to_add.items():
+            self.word_to_id[i] = k[0]
+            del self.word_to_id[k[1]]
 
 
     def tokenize(self, words):
@@ -36,11 +54,13 @@ class Model:
 
 
     def prepare_post_prediction(self, post):
-
-        post_data = post['title'] + " " + post['selftext']
+        """
+        pass dictionary with {"post_title":"dalsfkjds", "post_text":"ldkfjasdlkfjd fsdljf slkfj asdkjf lsdkf"}
+        """
+        post_data = str(post['post_title']) + " " + str(post['post_text'])
 
         clean_post = ""
-        for chr in str(title):
+        for chr in str(post_data):
             if chr in '.!?\\-':
                 clean_post += " "
             else:
@@ -48,24 +68,50 @@ class Model:
                 if l:
                     clean_post += chr.lower()
 
+        print(clean_post)
         post_ids = self.tokenize(clean_post)
-        self.post_ids_padded = sequence_pad_sequences(post_ids, maxlen=300)
+        self.post_ids_padded = sequence.pad_sequences([post_ids], maxlen=300)
 
 
     def make_prediction(self, post):
         self.prepare_post_prediction(post)
         self.prediction = self.model.predict(self.post_ids_padded)
 
+
         return self.get_subreddit_probas()
 
     def get_subreddit_probas(self):
-        self.subreddit_probas = {}
-        for i in range(len(self.prediction)):
-            self.subreddit_probas[self.subreddits[i]] = self.prediction[i]
 
-        return self.subreddit_probas
+        probas = {}
+
+        for i in range(len(self.prediction[0])):
+            probas[self.subreddit_mapper[i]] = self.prediction[0][i]
+
+        max_features = 5
+
+        k = Counter(probas)
+
+        highest = k.most_common(max_features)
+
+        pred_class = np.argmax(self.prediction, axis=1)
+        print(self.subreddit_mapper[pred_class[0]])
+        print(highest)
 
 
 
 if __name__ == "__main__":
-    pass
+    m = Model()
+
+    # post = {"post_title": "TIL Oscar winner Kate Winslet keeps her oscar in the bathroom. She does this so guests can hold it up and look in the mirror, then say their thank you's to friends and family, as if it was them winning the oscar. She finds it funny when they come back, their face has a hint of pink embarrassment.",
+    #         "post_text": ""}
+
+    df = pd.read_csv("data/test_reddit_frame.csv")
+    for i in range(20):
+        title = df["title"][i]
+        text = df["selftext"][i]
+
+        post = {"post_title": title,
+                "post_text": text}
+
+        m.make_prediction(post)
+        print("\n")

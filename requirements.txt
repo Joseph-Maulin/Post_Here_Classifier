@@ -1,0 +1,9 @@
+
+
+
+sklearn==0.0
+pandas==1.0.5
+numpy==1.19.0
+tensorflow==2.2.0
+Keras==2.4.2
+unicodecsv==0.14.1

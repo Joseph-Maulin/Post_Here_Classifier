@@ -3,25 +3,32 @@ import re
 from collections import Counter
 import numpy as np
 from sklearn.model_selection import train_test_split
-# from keras.preprocessing import sequence
-# from tensorflow.keras.callbacks import EarlyStopping
-# from tensorflow.keras.layers import Dropout, Dense, Embedding, LSTM
-# from tensorflow.keras.models import Sequential
-# from keras.optimizers import Adam
-# import tensorflow
+from keras.preprocessing import sequence
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.layers import Dropout, Dense, Embedding, LSTM
+from tensorflow.keras.models import Sequential
+from keras.optimizers import Adam
+import tensorflow
 import os
 import datetime
 import unicodecsv as csv
 from io import BytesIO
 
 
+
+# this is for model training. Use Load_Model_H5.py for loading model.
+
+
+
 class Post_Here_Classifier:
 
-    def __init__(self, file="data/reddit_posts_4M.csv"):
+    def __init__(self, file="data/reddit_posts_4M.csv", mode="prod"):
 
         # load csv into pandas.DataFrame
         self.df = pd.read_csv(file)
-        self.df = self.df.sample(1000)
+        if mode == "test" and file == "data/reddit_posts_4M.csv":
+            self.df = self.df.sample(20000)
+            self.df = self.df.reset_index()
 
         if file != "data/test_reddit_frame.csv":
             self.df.to_csv("data/test_reddit_frame.csv")
@@ -29,26 +36,35 @@ class Post_Here_Classifier:
         if file != "data/prepared_reddit_frame.csv":
 
             # clean and join "title" and "selftext"
+            print("...preparing")
             self.prepare_data()
 
             # get corpus of posts
+            print("...gathering corpus")
             self.get_corpus()
 
             # limit corpus to most popular words
+            print("...getting max_words")
             self.get_max_words()
+
             # tokenize
+            print("...tokenizing posts")
             self.tokenize_words()
 
-            # set subbreddit ids
+            # set subreddit ids
+            print("...subreddit ids")
             self.set_subreddit_ids()
 
             # save clean_df to csv
+            print("...saving prepared df")
             self.save_df()
 
             # # split_and_pad_train_test
-            # self.split_and_pad_train_test()
+            print("...train test split")
+            self.split_and_pad_train_test()
 
             # save csv_data
+            print("...saving csv_data")
             self.save_csv_data()
 
         else:
@@ -105,6 +121,7 @@ class Post_Here_Classifier:
             words = (self.df['clean_title'][i] + " " + self.df['clean_selftext'][i]).split(" ")
 
             for word in words:
+                word = re.sub("\n+|\s+", "", word)
                 if word == 'nan':
                     continue
                 if word not in self.corpus.keys():
@@ -114,30 +131,36 @@ class Post_Here_Classifier:
 
         del self.corpus['']
 
-    def get_max_words(self, max_features=100000):
+    def get_max_words(self, max_features=200000):
 
         # collect max_features number of top words from corpus
         k = Counter(self.corpus)
         highest = k.most_common(max_features)
 
+        # print(len(highest))
+        # print(highest[:5])
+
+        # word_cache = []
+        # for x in highest:
+        #     if x[0] not in word_cache:
+        #         word_cache.append(x[0])
+        #     else:
+        #         print(x[0])
+
         # create id to word for words
-        self.id_to_word = {}
-        self.id_to_word[0] = '<PAD>'
-        self.id_to_word[1] = '<UNK>'
+        self.word_to_id = {}
+        self.word_to_id['<PAD>'] = 0
+        self.word_to_id['<UNK>'] = 1
 
         for i in range(2, len(highest)+2):
-            self.id_to_word[i] = re.sub("\n+|\s+", "", highest[i-2][0])
+            # self.word_to_id[re.sub("\n+|\s+", "", highest[i-2][0])] = i
+            self.word_to_id[highest[i-2][0]] = i
 
         # create word to id for words
-        self.word_to_id = {v:k for k,v in self.id_to_word.items()}
         self.id_to_word = {k:v for v,k in self.word_to_id.items()}
 
-        word_cache = []
-        for word in self.id_to_word.values():
-            if word not in word_cache:
-                word_cache.append(word)
-            else:
-                print(word)
+        # print(len(self.id_to_word), len(self.word_to_id))
+
 
 
     def tokenize(self, words):
@@ -162,6 +185,7 @@ class Post_Here_Classifier:
 
     def split_and_pad_train_test(self):
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.df['clean_text_tokens'], self.df['subreddit_name_id_simple'], test_size=0.2, random_state=5)
+
         self.X_train_sequenced = sequence.pad_sequences(self.X_train, maxlen=300)
         self.X_test_sequenced = sequence.pad_sequences(self.X_test, maxlen=300)
 
@@ -188,26 +212,24 @@ class Post_Here_Classifier:
                            optimizer='nadam',
                            metrics=['sparse_categorical_accuracy'])
 
+        print(self.model.summary())
+
 
     def fit_model(self):
         stop = EarlyStopping(monitor='val_sparse_categorical_accuracy', min_delta=0.005, patience=3)
 
-        self.model.fit(self.X_train_sequenced, self.y_train,
-                batch_size=32,
-                epochs=100,
-                validation_data=(self.X_test_sequenced, self.y_test),
-                callbacks=[stop],
-                verbose=1)
+        # print(self.X_train_sequenced[0])
+        # print(type(self.y_train[0]))
+
+        self.model.fit(self.X_train_sequenced, self.y_train, batch_size=32, epochs=100, validation_data=(self.X_test_sequenced, self.y_test), callbacks=[stop])
 
         self.model.save("model/post_here_classifier", save_format="h5")
-
-        self.save_csv_data()
 
 
     def save_csv_data(self):
 
         # print(self.subreddits)
-        print(len(self.id_to_word), len(self.word_to_id), len(self.subreddits))
+        # print(len(self.id_to_word), len(self.word_to_id), len(self.subreddits))
         # for i in range(11994):
         #     try:
         #         self.id_to_word[i]
@@ -243,6 +265,8 @@ class Post_Here_Classifier:
         # print(problem_keys)
 
 if __name__ == "__main__":
-    phc = Post_Here_Classifier(file="data/test_reddit_frame.csv")
+    phc = Post_Here_Classifier(mode="test")
+    # phc = Post_Here_Classifier(file="data/test_reddit_frame.csv")
     # phc = Post_Here_Classifier(file="data/prepared_reddit_frame.csv")
-    # phc.create_model()
+    phc.create_model()
+    phc.fit_model()
