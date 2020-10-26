@@ -71,7 +71,6 @@ class Model:
                 if l:
                     clean_post += chr.lower()
 
-        print(clean_post)
         post_ids = self.tokenize(clean_post)
         self.post_ids_padded = sequence.pad_sequences([post_ids], maxlen=300)
 
