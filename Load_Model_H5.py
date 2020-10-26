@@ -1,4 +1,6 @@
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import keras
 from tensorflow.keras.preprocessing import sequence
 import unicodecsv as csv
@@ -7,6 +9,7 @@ import re
 import numpy as np
 import pandas as pd
 from collections import Counter
+
 
 
 class Model:
@@ -91,27 +94,31 @@ class Model:
 
         k = Counter(probas)
 
-        highest = k.most_common(max_features)
+        top_5 = k.most_common(max_features)
 
         pred_class = np.argmax(self.prediction, axis=1)
-        print(self.subreddit_mapper[pred_class[0]])
-        print(highest)
+
+        return top_5
+        # print(self.subreddit_mapper[pred_class[0]])
+        # print(top_5)
 
 
 
 if __name__ == "__main__":
     m = Model()
 
-    # post = {"post_title": "TIL Oscar winner Kate Winslet keeps her oscar in the bathroom. She does this so guests can hold it up and look in the mirror, then say their thank you's to friends and family, as if it was them winning the oscar. She finds it funny when they come back, their face has a hint of pink embarrassment.",
-    #         "post_text": ""}
+    post = {"post_title": "Doom Eternal", "post_text" : "Doom Eternal is the best and most badass game of all time!! It's crazy how many options you have\
+                                            as you go zipping around exploding demons!"}
 
-    df = pd.read_csv("data/test_reddit_frame.csv")
-    for i in range(20):
-        title = df["title"][i]
-        text = df["selftext"][i]
+    m.make_prediction(post)
 
-        post = {"post_title": title,
-                "post_text": text}
-
-        m.make_prediction(post)
-        print("\n")
+    # df = pd.read_csv("data/test_reddit_frame.csv")
+    # for i in range(20):
+    #     title = df["title"][i]
+    #     text = df["selftext"][i]
+    #
+    #     post = {"post_title": title,
+    #             "post_text": text}
+    #
+    #     m.make_prediction(post)
+    #     print("\n")
