@@ -2,7 +2,7 @@
 
 
 # Introduction
-This is a program to train a nueral network to classify which subreddit an inputed post title and text would fit best. Due to github file size restraints, a couple additional file(s) will have to be loaded into this structure. See "Functionality" below..
+This is a program to train a neural network to classify which subreddit an inputed post title and text would fit best. Due to github file size restraints, a couple additional file(s) will have to be loaded into this structure. See "Functionality" below..
 
 # What is Here?
   ## PHC.py 
