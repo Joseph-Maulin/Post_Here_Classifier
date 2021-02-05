@@ -9,14 +9,22 @@ import re
 import numpy as np
 import pandas as pd
 from collections import Counter
+from google.colab import drive
 
 
 
 class Model:
 
-    def __init__(self, model_location="model/post_here_classifier"):
-        self.model = keras.models.load_model(model_location)
-        # self.model.summary()
+    def __init__(self, model_location="model/post_here_classifier", url_read = False):
+
+        if(url_read):
+            drive.mount('/content/gdrive')
+            url = "/content/gdrive/My Drive/post_here_classifier"
+            self.model = keras.models.load_model(url)
+
+        else:
+            self.model = keras.models.load_model(model_location)
+
 
         with open("model/id_to_word.csv", "rb") as f:
             reader = csv.reader(f, encoding="utf-8")
@@ -43,6 +51,7 @@ class Model:
         for i,k in keys_to_add.items():
             self.word_to_id[i] = k[0]
             del self.word_to_id[k[1]]
+
 
 
     def tokenize(self, words):
