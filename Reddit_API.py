@@ -27,16 +27,41 @@ class Reddit_API:
         return page.hot(limit = k)
 
 
+    def get_user_comments(self, user, limit=5):
+        """
+            Get user comments
+        """
+        posts = list(self.connection.redditor(user).comments.new(limit=limit))
+        return posts
+
+    def get_user_posts(self, user, limit=5):
+        """
+            Get user submissions
+        """
+        submisions = list(self.connection.redditor(user).submissions.top(limit=limit))
+        return submisions
+
+
 
 
 if __name__ == "__main__":
     r = Reddit_API()
 
-    posts = r.get_subreddit_top_k_posts("politics", 1)
-    for x in posts:
-        print(x.title)
-        print(x.selftext)
-        print(x.created_utc)
+    # https://praw.readthedocs.io/en/latest/code_overview/models/submission.html
+    # for x in r.get_user_submissions("grilled_cheezeee", limit = 5):
+    #     print(x.title)
+    #     print(x.selftext)
+    #     print("\n")
+
+    # https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
+    for x in r.get_user_posts("grilled_cheezeee"):
+        print(x.body)
+
+    # posts = r.get_subreddit_top_k_posts("politics", 1)
+    # for x in posts:
+    #     print(x.title)
+    #     print(x.selftext)
+    #     print(x.created_utc)
         # print(dir(x))
 
 
