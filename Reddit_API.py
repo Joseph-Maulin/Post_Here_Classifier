@@ -49,18 +49,24 @@ class Reddit_API:
         return submission
 
 
+    def get_comments(self, comment, levels=2):
+        """
+            Get comments above and x levels below
+        """
+        return self.get_comments_above(comment) + self.get_comments_below(comment, levels=levels)
+
     def get_comments_above(self, comment):
         """
             Get Parent comments
         """
-        comment_chain = [comment]
+        comment_chain = [comment.body]
 
-        while True:
+        while comment.parent():
             comment.refresh()
             comment = comment.parent()
             if not isinstance(comment, praw.models.reddit.comment.Comment):
                 break
-            comment_chain.insert(0, comment)
+            comment_chain.insert(0, comment.body)
 
         return comment_chain
 
@@ -71,13 +77,13 @@ class Reddit_API:
         """
 
         comment.refresh()
-        return [comment.body] + self.build_comment_group(list(comment.replies))
+        return [comment.body] + self.build_comment_group(list(comment.replies), levels)
 
 
     def build_comment_group(self, comments, i):
 
-        if not comments:
-            return []
+        if not comments or i==0:
+            return None
 
         else:
             comment_group = []
@@ -85,23 +91,12 @@ class Reddit_API:
                 x.refresh()
                 comment_group += [x.body]
                 if x.replies:
-                    comment_group += [self.build_comment_group(list(x.replies))]
+                    replies = [self.build_comment_group(list(x.replies), i-1)]
+                    if replies[0]:
+                        comment_group += replies
 
 
             return comment_group
-
-
-
-
-
-        # for x in submission.comments:
-        #     print(x.body)
-        #     for y in x.replies:
-        #         print(y.body)
-        #         p = y.parent()
-        #         print(p.body)
-        #     print("\n")
-
 
 
 
@@ -113,8 +108,14 @@ if __name__ == "__main__":
     comment.refresh()
     # comment.comments.replace_more(limit=None)
 
-    for x in r.get_comments_below(comment):
+    comments = r.get_comments_above(comment)
+
+    for x in comments:
         print(x)
+
+    # for x in r.get_comments(comment):
+    #     print(x)
+    #     print("\n")
 
 
 
