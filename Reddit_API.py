@@ -44,7 +44,64 @@ class Reddit_API:
         """
             Get subbmission from id
         """
-        return self.connection.submission(post_id)
+        submission = self.connection.submission(post_id)
+        submission.comments.replace_more(limit=None)
+        return submission
+
+
+    def get_comments_above(self, comment):
+        """
+            Get Parent comments
+        """
+        comment_chain = [comment]
+
+        while True:
+            comment.refresh()
+            comment = comment.parent()
+            if not isinstance(comment, praw.models.reddit.comment.Comment):
+                break
+            comment_chain.insert(0, comment)
+
+        return comment_chain
+
+
+    def get_comments_below(self, comment, levels=2):
+        """
+            Get comments below
+        """
+
+        comment.refresh()
+        return [comment.body] + self.build_comment_group(list(comment.replies))
+
+
+    def build_comment_group(self, comments, i):
+
+        if not comments:
+            return []
+
+        else:
+            comment_group = []
+            for x in comments:
+                x.refresh()
+                comment_group += [x.body]
+                if x.replies:
+                    comment_group += [self.build_comment_group(list(x.replies))]
+
+
+            return comment_group
+
+
+
+
+
+        # for x in submission.comments:
+        #     print(x.body)
+        #     for y in x.replies:
+        #         print(y.body)
+        #         p = y.parent()
+        #         print(p.body)
+        #     print("\n")
+
 
 
 
@@ -52,9 +109,28 @@ class Reddit_API:
 if __name__ == "__main__":
     r = Reddit_API()
 
-    submission = r.get_submission("ld29nb")
-    print(submission.title)
-    print(submission.selftext)
+    comment = r.get_user_comments("Bloba_Fett", limit=2)[1]
+    comment.refresh()
+    # comment.comments.replace_more(limit=None)
+
+    for x in r.get_comments_below(comment):
+        print(x)
+
+
+
+
+    # comment_queue = submission.comments[:]
+    # while comment_queue:
+    #     comment = comment_queue.pop(0)
+    #     print(comment.body)
+    #     comment_queue.extend(comment.replies)
+
+
+
+    # submission = r.get_submission("ld29nb")
+    # print(submission.title)
+    # print(submission.selftext)
+    # print(submission.num_comments)
 
     # https://praw.readthedocs.io/en/latest/code_overview/models/submission.html
     # for x in r.get_user_submissions("grilled_cheezeee", limit = 5):
