@@ -37,8 +37,19 @@ class Reddit_API:
         """
             Get user submissions
         """
-        return list(self.connection.redditor(user).submissions.top(limit=limit))
+        return list(self.connection.redditor(user).submissions.new(limit=limit))
 
+    def get_post_comments(self, post, limit=10):
+
+        comments = []
+
+        post.comment_sort = "best"
+        post.comment_limit = str(limit)
+        for y in x.comments:
+            if isinstance(y, praw.models.reddit.comment.Comment):
+                comments.append(y)
+
+        return comments
 
     def get_submission(self, post_id):
         """
@@ -49,7 +60,7 @@ class Reddit_API:
         return submission
 
 
-    def get_comments(self, comment, levels=2):
+    def get_comments_for_comment(self, comment, levels=2):
         """
             Get comments above and x levels below
         """
@@ -59,7 +70,7 @@ class Reddit_API:
         """
             Get Parent comments
         """
-        comment_chain = [comment.body]
+        comment_chain = []
 
         while comment.parent():
             comment.refresh()
@@ -104,14 +115,19 @@ class Reddit_API:
 if __name__ == "__main__":
     r = Reddit_API()
 
-    comment = r.get_user_comments("Bloba_Fett", limit=2)[1]
-    comment.refresh()
+    for x in r.get_user_posts("masktoobig"):
+        print(x.title)
+        print(x.created_utc)
+        print(datetime.datetime.fromtimestamp(x.created_utc))
+        for y in r.get_post_comments(x):
+            print(y.body)
+
+
+    # comment = r.get_user_comments("Bloba_Fett", limit=2)[1]
+    # comment.refresh()
     # comment.comments.replace_more(limit=None)
 
-    comments = r.get_comments_above(comment)
 
-    for x in comments:
-        print(x)
 
     # for x in r.get_comments(comment):
     #     print(x)
