@@ -113,7 +113,7 @@ class Model:
 
 
 if __name__ == "__main__":
-    m = Model()
+    m = Model(url_read=True)
 
     post = {"post_title": "Doom Eternal", "post_text" : "Doom Eternal is the best and most badass game of all time!! It's crazy how many options you have\
                                             as you go zipping around exploding demons!"}
