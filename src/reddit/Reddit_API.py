@@ -1,15 +1,10 @@
 
 import praw
 import os
-from dotenv import load_dotenv
-from pathlib import Path
 import datetime
 
 
 class Reddit_API:
-
-    env_path = Path("./.env")
-    load_dotenv(dotenv_path = env_path)
 
     def __init__(self):
         self.connection = self.set_connection()
@@ -45,7 +40,7 @@ class Reddit_API:
 
         post.comment_sort = "best"
         post.comment_limit = str(limit)
-        for y in x.comments:
+        for y in post.comments:
             if isinstance(y, praw.models.reddit.comment.Comment):
                 comments.append(y)
 
