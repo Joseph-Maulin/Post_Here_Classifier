@@ -2,6 +2,12 @@
 import praw
 import os
 import datetime
+import plotly
+import plotly.graph_objs as go
+import plotly.express as px
+from plotly.offline import init_notebook_mode, plot, iplot
+import pandas as pd
+import plotly.io as pio
 
 
 class Reddit_API:
@@ -103,6 +109,50 @@ class Reddit_API:
 
 
             return comment_group
+
+    def build_comment_history_html(user, limit=5):
+        df = pd.DataFrame({"title":[],
+                    "selftext":[],
+                    "subreddit":[],
+                    "author":[],
+                    "created":[],
+                    "comments":[]})
+
+        for post in self.get_user_posts(user, limit=limit)[::-1]:
+            df = df.append({"title": post.title,
+                          "selftext":post.selftext,
+                          "subreddit":post.subreddit_name_prefixed,
+                          "author":post.author,
+                          "created":str(datetime.date.fromtimestamp(post.created_utc)),
+                          "num_comments":post.num_comments},
+                          ignore_index=True)
+
+        barchart = px.bar(
+            data_frame = df,
+            x = "title",
+            y = "num_comments",
+            orientation = "v",
+            barmode="relative",
+            labels={"title":"Title", "num_comments":"Number of Comments", "subreddit":"Subreddit"},
+            hover_data = ['title', 'num_comments', 'subreddit']
+        )
+
+        post_comments = go.Figure(barchart)
+
+        post_comments.update_layout(
+            xaxis_title = "Posted",
+            xaxis = dict(tickmode='array', tickvals=list(range(len(df))), ticktext=[x for x in df.created]),
+            title = "Post Data"
+        )
+
+        pio.write_html(post_comments, file="templates/post_comments")
+
+
+
+
+
+
+
 
 
 
