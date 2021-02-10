@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
+class Post(models.Model):
+    post_title = models.CharField(max_length=120)
+    post_text  = models.TextField(blank=True, null=True)

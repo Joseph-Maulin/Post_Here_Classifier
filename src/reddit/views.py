@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from .post_form import PostForm
 
 
 def home_view(request, *args, **kwargs):
@@ -10,4 +10,11 @@ def home_view(request, *args, **kwargs):
 
 def post_view(request, *args, **kwargs):
 
-    return render(request, "post.html")
+    form = PostForm(request.POST or None)
+    if form.is_valid():
+        print(form.cleaned_data)
+
+    context = {
+        "form" : form
+    }
+    return render(request, "post.html", context)
