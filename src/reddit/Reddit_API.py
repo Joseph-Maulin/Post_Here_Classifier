@@ -11,15 +11,15 @@ class Reddit_API:
 
     def set_connection(self):
         return praw.Reddit(client_id = os.getenv("REDDIT_CLIENT_ID"),
-                                      client_secret = os.getenv("REDDIT_CLIENT_SECRET"),
-                                      user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36')
+                           client_secret = os.getenv("REDDIT_CLIENT_SECRET"),
+                           user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36')
 
     def get_subreddit_top_k_posts(self, subreddit, k = 5):
         """
             Get the top hot post objects for a given subreddit
         """
         page = self.connection.subreddit(subreddit)
-        return page.hot(limit = k)
+        return page.hot(limit=k)
 
 
     def get_user_comments(self, user, limit=5):
