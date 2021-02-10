@@ -1,0 +1,23 @@
+
+{% load static %}
+
+{% block head %}
+<head>
+<meta name="keywords" content="Post Here Classifier Reddit"/>
+<meta name="author" content="Joseph Maulin"/>
+<meta name="description" content="A reddit extension for users and post suggestion"/>
+<meta name="viewport" content="width=device-width"/>
+<meta charset="UTF-8"/>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+
+</head>
+{% endblock %}
+
+
+<body>
+{% include 'navbar.html' %}
+<br><br>
+{% block content %}
+{% endblock %}
+</body>
