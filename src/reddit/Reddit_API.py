@@ -146,7 +146,7 @@ class Reddit_API:
         )
 
         pio.write_html(post_comments, file="templates/post_comments")
-
+        # <iframe id='post_comments' scrolling='no' style='border:none;' seamless='seamless' src='post_comments.html' height='525' width=80%></iframe>
 
 
 
