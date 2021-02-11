@@ -179,7 +179,7 @@ class Reddit_API:
 
         post_history = go.Figure(r__pie)
 
-        pio.write_html(post_comments, file="templates/post_history")
+        pio.write_html(post_history, file="templates/post_history")
         # <iframe id='post_history' scrolling='no' style='border:none;' seamless='seamless' src='post_history.html' height='525' width=80%></iframe>
 
 
