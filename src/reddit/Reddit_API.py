@@ -154,8 +154,7 @@ class Reddit_API:
         # <iframe id='post_comments' scrolling='no' style='border:none;' seamless='seamless' src='post_comments.html' height='525' width=80%></iframe>
 
 
-    def build_post_numbers_history(self, user, limit=50)
-
+    def build_post_numbers_history(self, user, limit=50):
         df = self.get_user_df(user, limit)
 
         subreddit_numbers = {}
