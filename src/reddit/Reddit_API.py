@@ -110,7 +110,7 @@ class Reddit_API:
 
             return comment_group
 
-    def build_comment_history_html(user, limit=5):
+    def get_user_df(self, user, limit):
         df = pd.DataFrame({"title":[],
                     "selftext":[],
                     "subreddit":[],
@@ -118,7 +118,7 @@ class Reddit_API:
                     "created":[],
                     "comments":[]})
 
-        for post in self.get_user_posts(user, limit=limit)[::-1]:
+        for post in r.get_user_posts(user, limit=limit)[::-1]:
             df = df.append({"title": post.title,
                           "selftext":post.selftext,
                           "subreddit":post.subreddit_name_prefixed,
@@ -126,6 +126,11 @@ class Reddit_API:
                           "created":str(datetime.date.fromtimestamp(post.created_utc)),
                           "num_comments":post.num_comments},
                           ignore_index=True)
+
+        return df
+
+    def build_comment_history_html(self, user, limit=5):
+        df = self.get_user_df(user, limit)
 
         barchart = px.bar(
             data_frame = df,
@@ -149,9 +154,33 @@ class Reddit_API:
         # <iframe id='post_comments' scrolling='no' style='border:none;' seamless='seamless' src='post_comments.html' height='525' width=80%></iframe>
 
 
+    def build_post_numbers_history(self, user, limit=50)
+
+        df = self.get_user_df(user, limit)
+
+        subreddit_numbers = {}
+        subreddit_posts = []
+        for x in df['subreddit'].unique():
+          subreddit_numbers[x] = df[df['subreddit'] == x]['num_comments'].sum()
+          subreddit_posts.append(len(df[df['subreddit'] == x]))
 
 
+        reddit_numbers = pd.DataFrame({"Subreddit":subreddit_numbers.keys(), "Comments":subreddit_numbers.values(), "Posts":subreddit_posts})
+        reddit_numbers['Comments_Per_Post'] = round(reddit_numbers["Comments"]/reddit_numbers["Posts"], 2)
 
+        r__pie = px.pie(reddit_numbers,
+                values='Posts',
+                names='Subreddit',
+                title='Subreddit Post Percentage -- Last 50',
+                color_discrete_sequence=px.colors.sequential.Hot,
+                hover_data=["Comments_Per_Post"]
+                )
+        r__pie.update_traces(textposition='inside', textinfo='percent+label')
+
+        post_history = go.Figure(r__pie)
+
+        pio.write_html(post_comments, file="templates/post_history")
+        # <iframe id='post_history' scrolling='no' style='border:none;' seamless='seamless' src='post_history.html' height='525' width=80%></iframe>
 
 
 
