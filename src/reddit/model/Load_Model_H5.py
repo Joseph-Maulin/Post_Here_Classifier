@@ -9,13 +9,12 @@ import re
 import numpy as np
 import pandas as pd
 from collections import Counter
-from google.colab import drive
 
 
 
 class Model:
 
-    def __init__(self, model_location="model/post_here_classifier", url_read = False):
+    def __init__(self, model_location="reddit/model/model/post_here_classifier.h5", url_read = False):
 
         if(url_read):
             drive.mount('/content/gdrive')
@@ -26,12 +25,12 @@ class Model:
             self.model = keras.models.load_model(model_location)
 
 
-        with open("model/id_to_word.csv", "rb") as f:
+        with open("reddit/model/model/id_to_word.csv", "rb") as f:
             reader = csv.reader(f, encoding="utf-8")
             id_to_word = {}
             id_to_word = {int(rows[0]):rows[1] for rows in reader}
 
-        with open("model/subreddit_mapper.csv", "rb") as f:
+        with open("reddit/model/model/subreddit_mapper.csv", "rb") as f:
           reader = csv.reader(f, encoding="utf-8")
           self.subreddits = {}
           self.subreddits = {rows[0]:int(rows[1]) for rows in reader}
@@ -110,15 +109,23 @@ class Model:
         # print(self.subreddit_mapper[pred_class[0]])
         # print(top_5)
 
+model = Model()
+
+def get_model():
+    global model
+    return model
+
+
 
 
 if __name__ == "__main__":
-    m = Model(url_read=True)
+    m = Model()
 
-    post = {"post_title": "Doom Eternal", "post_text" : "Doom Eternal is the best and most badass game of all time!! It's crazy how many options you have\
-                                            as you go zipping around exploding demons!"}
+    post = {"post_title": "Only in 1989",
+            "post_text" : "I'm absolutely losing my mind that credit scores weren't established in the US until 1989. We really are teh guinea pig generations for all the bad boomer ideas"}
 
-    m.make_prediction(post)
+    print(m.make_prediction(post))
+
 
     # df = pd.read_csv("data/test_reddit_frame.csv")
     # for i in range(20):

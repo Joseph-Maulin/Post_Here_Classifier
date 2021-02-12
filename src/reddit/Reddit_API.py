@@ -20,6 +20,14 @@ class Reddit_API:
                            client_secret = os.getenv("REDDIT_CLIENT_SECRET"),
                            user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36')
 
+    def get_reddit_top_k_posts(self, k=1000):
+        """
+            Get the top hot post objects for reddit
+        """
+        return self.connection.subreddit("all").hot(limit=k)
+
+
+
     def get_subreddit_top_k_posts(self, subreddit, k = 5):
         """
             Get the top hot post objects for a given subreddit
@@ -154,8 +162,7 @@ class Reddit_API:
         # <iframe id='post_comments' scrolling='no' style='border:none;' seamless='seamless' src='post_comments.html' height='525' width=80%></iframe>
 
 
-    def build_post_numbers_history(self, user, limit=50)
-
+    def build_post_numbers_history(self, user, limit=50):
         df = self.get_user_df(user, limit)
 
         subreddit_numbers = {}
@@ -187,14 +194,23 @@ class Reddit_API:
 
 
 if __name__ == "__main__":
+
     r = Reddit_API()
 
-    for x in r.get_user_posts("masktoobig"):
+    for x in r.get_reddit_top_k_posts():
+        print(x.subreddit_name_prefixed)
         print(x.title)
-        print(x.created_utc)
-        print(datetime.datetime.fromtimestamp(x.created_utc))
-        for y in r.get_post_comments(x):
-            print(y.body)
+        print(x.num_comments)
+        print("\n")
+
+    # r = Reddit_API()
+    #
+    # for x in r.get_user_posts("masktoobig"):
+    #     print(x.title)
+    #     print(x.created_utc)
+    #     print(datetime.datetime.fromtimestamp(x.created_utc))
+    #     for y in r.get_post_comments(x):
+    #         print(y.body)
 
 
     # comment = r.get_user_comments("Bloba_Fett", limit=2)[1]
