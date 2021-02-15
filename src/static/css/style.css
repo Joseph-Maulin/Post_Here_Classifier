@@ -26,6 +26,7 @@
   color: white;
 }
 
-body{
-  padding:16px;
+.post-comments {
+  width:10%;
+  height:20%;
 }

@@ -1,49 +1,101 @@
+
+# django
 from django.shortcuts import render
 from django.http import HttpResponse
-from .post_form import PostForm
-from .Reddit_API import Reddit_API
+from django.shortcuts import redirect
+from django.views.decorators.clickjacking import xframe_options_exempt
+
+# forms
+from .forms.post_form import PostForm
+from .forms.user_form import UserForm
+
+# models
+from .model.Load_Model_H5 import get_model
+
+# reddit
+from .Reddit_API import get_reddit_api
 import praw
+
+# python
 import os
 import datetime
-from .model.Load_Model_H5 import get_model
 import json
 
 
 
 def home_view(request, *args, **kwargs):
-
     return render(request, "home.html")
 
 
-
 def post_view(request, *args, **kwargs):
-
-    r = Reddit_API()
-
-    for x in r.get_user_posts("masktoobig"):
-        print(x.title)
-        print(x.created_utc)
-        print(datetime.datetime.fromtimestamp(x.created_utc))
-        for y in r.get_post_comments(x):
-            print(y.body)
-
     form = PostForm(request.POST or None)
-    if form.is_valid():
-        print(form.cleaned_data)
 
-    context = {
-        "form" : form
-    }
-    return render(request, "post.html", context)
+    if request.method == 'POST':
+        if form.is_valid():
+            print(request.POST)
+            request.session['post_title'] = request.POST['post_title']
+            request.session['post_text'] = request.POST['post_text']
+            return redirect('/predict')
+
+    else:
+        context = {
+            "form" : form
+        }
+        return render(request, "post.html", context)
 
 
 def make_prediction(request, *args, **kwargs):
-
     m = get_model()
 
-    post = {"post_title": "Only in 1989",
-            "post_text" : "I'm absolutely losing my mind that credit scores weren't established in the US until 1989. We really are teh guinea pig generations for all the bad boomer ideas"}
+    post = {"post_title": title,
+            "post_text" : text}
 
     pred = m.make_prediction(post)
 
     return HttpResponse(pred)
+
+
+@xframe_options_exempt
+def user_view(request, *args, **kwargs):
+    form = UserForm(request.POST or None)
+
+    r = get_reddit_api()
+    posts = None
+
+    context = {
+        "form" : form,
+        "posts" : posts
+    }
+
+    if request.method == 'POST':
+        if form.is_valid():
+            r.build_comment_history_html(request.POST["user_name"])
+            context["posts"] = r.get_user_posts(request.POST['user_name'])
+
+    return render(request, "user.html", context)
+
+
+
+
+def reddit_test(request):
+    r = get_reddit_api()
+
+    response = {}
+    for i, x in enumerate(r.get_user_posts("masktoobig")):
+        response[i] = []
+        response[i].append(x.title)
+        response[i].append(x.created_utc)
+        response[i].append(str(datetime.datetime.fromtimestamp(x.created_utc)))
+        response[i].append({"comments":[]})
+        for y in r.get_post_comments(x):
+            response[i][3]['comments'].append(y.body)
+
+    return HttpResponse(json.dumps(response))
+
+
+
+
+
+
+
+#endpage

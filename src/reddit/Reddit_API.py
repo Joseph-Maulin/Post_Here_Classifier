@@ -16,6 +16,7 @@ class Reddit_API:
         self.connection = self.set_connection()
 
     def set_connection(self):
+        # print(f"client_id: {os.getenv('REDDIT_CLIENT_ID')}")
         return praw.Reddit(client_id = os.getenv("REDDIT_CLIENT_ID"),
                            client_secret = os.getenv("REDDIT_CLIENT_SECRET"),
                            user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36')
@@ -126,7 +127,7 @@ class Reddit_API:
                     "created":[],
                     "comments":[]})
 
-        for post in r.get_user_posts(user, limit=limit)[::-1]:
+        for post in self.get_user_posts(user, limit=limit)[::-1]:
             df = df.append({"title": post.title,
                           "selftext":post.selftext,
                           "subreddit":post.subreddit_name_prefixed,
@@ -158,11 +159,11 @@ class Reddit_API:
             title = "Post Data"
         )
 
-        pio.write_html(post_comments, file="templates/post_comments")
+        pio.write_html(post_comments, file="reddit/templates/post_comments.html")
         # <iframe id='post_comments' scrolling='no' style='border:none;' seamless='seamless' src='post_comments.html' height='525' width=80%></iframe>
 
 
-    def build_post_numbers_history(self, user, limit=50):
+    def build_post_numbers_history_html(self, user, limit=50):
         df = self.get_user_df(user, limit)
 
         subreddit_numbers = {}
@@ -186,10 +187,21 @@ class Reddit_API:
 
         post_history = go.Figure(r__pie)
 
-        pio.write_html(post_history, file="templates/post_history")
+        pio.write_html(post_history, file="reddit/templates/post_history.html")
         # <iframe id='post_history' scrolling='no' style='border:none;' seamless='seamless' src='post_history.html' height='525' width=80%></iframe>
 
 
+
+reddit_api = None
+
+def create_api():
+    return Reddit_API()
+
+def get_reddit_api():
+    global reddit_api
+    if not reddit_api:
+        reddit_api = create_api()
+    return reddit_api
 
 
 

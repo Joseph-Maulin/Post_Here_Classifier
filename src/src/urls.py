@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from reddit.views import home_view, post_view, make_prediction
+from reddit.views import home_view, post_view, make_prediction, user_view, reddit_test
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", home_view, name="home"),
     path("post/", post_view, name="post"),
-    path("predict/", make_prediction, name="prediction")
+    path("predict/", make_prediction, name="prediction"),
+    path("user/", user_view, name="user"),
+    path("reddit_test/", reddit_test, name="reddit_test")
 ]

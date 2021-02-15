@@ -1,0 +1,27 @@
+
+
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<form method='POST'> {% csrf_token %}
+  {{ form.as_p }}
+  <input type='submit' value="User Continue"/>
+</form>
+
+{% if posts %}
+  <br/><br/>
+  {% for x in posts %}
+    <h2>{{x.title}}</h2>
+    <h2>{{x.selftext}}</h2>
+  {% endfor %}
+
+  <div
+  <div class="post-comments">
+    {% include 'post_comments.html' %}
+  <div/>
+{% endif %}
+
+
+{% endblock %}
