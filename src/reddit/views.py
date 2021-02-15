@@ -76,8 +76,6 @@ def user_view(request, *args, **kwargs):
     return render(request, "user.html", context)
 
 
-
-
 def reddit_test(request):
     r = get_reddit_api()
 
@@ -92,10 +90,6 @@ def reddit_test(request):
             response[i][3]['comments'].append(y.body)
 
     return HttpResponse(json.dumps(response))
-
-
-
-
 
 
 

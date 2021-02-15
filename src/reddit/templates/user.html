@@ -5,9 +5,9 @@
 
 {% block content %}
 
-<form method='POST'> {% csrf_token %}
+<form method='POST' action='/load'> {% csrf_token %}
   {{ form.as_p }}
-  <input type='submit' value="User Continue"/>
+  <input id="user_button" type='submit' value="User Continue"/>
 </form>
 
 {% if posts %}
@@ -24,8 +24,18 @@
     <div class="graph">
       {% include 'post_history.html' %}
     </div>
+    <div class="graph">
+      {% include 'subreddit_nums.html' %}
+    </div>
   </div>
 {% endif %}
 
+<script type="text/javascript">
+  $(function() {
+    $("#user_button").on('click', function(){
+      $("#load_screen").addclass("load_animation")
+    })
+  })
+</script>
 
 {% endblock %}

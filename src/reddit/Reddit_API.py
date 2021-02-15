@@ -16,10 +16,17 @@ class Reddit_API:
         self.connection = self.set_connection()
 
     def set_connection(self):
-        # print(f"client_id: {os.getenv('REDDIT_CLIENT_ID')}")
-        return praw.Reddit(client_id = os.getenv("REDDIT_CLIENT_ID"),
-                           client_secret = os.getenv("REDDIT_CLIENT_SECRET"),
+
+        REDDIT_CLIENT_ID = "Xt1K7W8ENUVSww"
+        REDDIT_CLIENT_SECRET = "ydXINm5TPFPbKJNpAhQ1h_FBGTQ"
+        return praw.Reddit(client_id = REDDIT_CLIENT_ID,
+                           client_secret = REDDIT_CLIENT_SECRET,
                            user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36')
+
+        # # print(f"client_id: {os.getenv('REDDIT_CLIENT_ID')}")
+        # return praw.Reddit(client_id = os.getenv("REDDIT_CLIENT_ID"),
+        #                    client_secret = os.getenv("REDDIT_CLIENT_SECRET"),
+        #                    user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36')
 
     def get_reddit_top_k_posts(self, k=1000):
         """
@@ -148,6 +155,7 @@ class Reddit_API:
             orientation = "v",
             barmode="relative",
             labels={"title":"Title", "num_comments":"Number of Comments", "subreddit":"Subreddit"},
+            color_discrete_sequence=px.colors.sequential.OrRd_r,
             hover_data = ['title', 'num_comments', 'subreddit']
         )
 
@@ -160,7 +168,6 @@ class Reddit_API:
         )
 
         pio.write_html(post_comments, file="reddit/templates/post_comments.html")
-        # <iframe id='post_comments' scrolling='no' style='border:none;' seamless='seamless' src='post_comments.html' height='525' width=80%></iframe>
 
 
     def build_post_numbers_history_html(self, user, limit=50):
@@ -197,8 +204,57 @@ class Reddit_API:
         post_history = go.Figure(r__pie)
 
         pio.write_html(post_history, file="reddit/templates/post_history.html")
-        # <iframe id='post_history' scrolling='no' style='border:none;' seamless='seamless' src='post_history.html' height='525' width=80%></iframe>
 
+    def get_user_recent_subreddit_numbers(self, user):
+        df = self.get_user_df(user, limit=20)
+
+        subreddit_numbers = {}
+        subreddit_posts = []
+        for x in df['subreddit'].unique():
+            subreddit_numbers[x] = df[df['subreddit'] == x]['num_comments'].sum()
+            subreddit_posts.append(len(df[df['subreddit'] == x]))
+
+        user_subs = list(subreddit_numbers.keys())
+        subreddit_day_and_comment = {}
+        for x in user_subs:
+            subreddit_day_and_comment[x] = self.get_comment_numbers_subreddit(x)
+
+        s_d_c_data = {"subreddit":[], "date":[], "num_comments":[]}
+
+        for i,c in subreddit_day_and_comment.items():
+          for x,z in c.items():
+              s_d_c_data["subreddit"].append(i)
+              s_d_c_data["date"].append(x)
+              s_d_c_data["num_comments"].append(z)
+
+        s_d_c = pd.DataFrame(s_d_c_data)
+
+        scatter = px.scatter(s_d_c,
+                     x="date",
+                     y="subreddit",
+                     color="subreddit",
+                     size="num_comments",
+                     color_discrete_sequence=px.colors.sequential.Bluered)
+
+        fig = go.Figure(scatter)
+        fig.update_layout(showlegend=False)
+
+        pio.write_html(fig, file="reddit/templates/subreddit_nums.html")
+
+
+
+    def get_comment_numbers_subreddit(self, subreddit):
+        subreddit = subreddit[2:]
+        nums = r.connection.subreddit(subreddit).top(limit=50)
+
+        comments_date = {}
+        for x in nums:
+            try:
+              comments_date[str(datetime.date.fromtimestamp(x.created_utc))] += x.num_comments
+            except:
+              comments_date[str(datetime.date.fromtimestamp(x.created_utc))] = x.num_comments
+
+        return comments_date
 
 
 reddit_api = None
@@ -218,11 +274,7 @@ if __name__ == "__main__":
 
     r = Reddit_API()
 
-    for x in r.get_reddit_top_k_posts():
-        print(x.subreddit_name_prefixed)
-        print(x.title)
-        print(x.num_comments)
-        print("\n")
+    r.get_user_recent_subreddit_numbers("masktoobig")
 
     # r = Reddit_API()
     #
