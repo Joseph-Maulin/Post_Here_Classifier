@@ -13,7 +13,8 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 
-
+# https://console.cloud.google.com/appengine/start/deploy?language=python&environment=standard&project=post-here-classi-1612563081759&folder&organizationId
+# https://github.com/llSourcell/how_to_deploy_a_keras_model_to_production/blob/master/instructions.ipynb
 
 class Model:
 

@@ -10,7 +10,7 @@ from .forms.post_form import PostForm
 from .forms.user_form import UserForm
 
 # models
-# from .model.Load_Model_H5 import get_model
+from .model.Load_Model_H5 import get_model
 
 # reddit
 from .Reddit_API import get_reddit_api
