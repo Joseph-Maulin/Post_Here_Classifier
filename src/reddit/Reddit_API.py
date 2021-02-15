@@ -125,7 +125,7 @@ class Reddit_API:
                     "subreddit":[],
                     "author":[],
                     "created":[],
-                    "comments":[]})
+                    "num_comments":[]})
 
         for post in self.get_user_posts(user, limit=limit)[::-1]:
             df = df.append({"title": post.title,
@@ -172,9 +172,17 @@ class Reddit_API:
           subreddit_numbers[x] = df[df['subreddit'] == x]['num_comments'].sum()
           subreddit_posts.append(len(df[df['subreddit'] == x]))
 
+        # print("\n\n")
+        # print(subreddit_numbers.keys(), len(subreddit_numbers.keys()))
+        # print("\n")
+        # print(subreddit_numbers.values(), len(subreddit_numbers.values()))
+        # print("\n")
+        # print(subreddit_posts, len(subreddit_posts))
+        # print("\n\n")
 
-        reddit_numbers = pd.DataFrame({"Subreddit":subreddit_numbers.keys(), "Comments":subreddit_numbers.values(), "Posts":subreddit_posts})
-        reddit_numbers['Comments_Per_Post'] = round(reddit_numbers["Comments"]/reddit_numbers["Posts"], 2)
+        reddit_numbers = pd.DataFrame({"Subreddit":list(subreddit_numbers.keys()), "Comments":list(subreddit_numbers.values()), "Posts":subreddit_posts})
+        reddit_numbers['Comments_Per_Post'] = reddit_numbers["Comments"]/reddit_numbers["Posts"]
+        reddit_numbers['Comments_Per_Post'] = reddit_numbers['Comments_Per_Post'].apply(lambda x : round(x,2))
 
         r__pie = px.pie(reddit_numbers,
                 values='Posts',
@@ -184,6 +192,7 @@ class Reddit_API:
                 hover_data=["Comments_Per_Post"]
                 )
         r__pie.update_traces(textposition='inside', textinfo='percent+label')
+        r__pie.update_layout(uniform_text_minsize=10, uniformtext_mode='hide')
 
         post_history = go.Figure(r__pie)
 

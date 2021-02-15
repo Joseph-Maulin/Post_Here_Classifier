@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import re
 from collections import Counter
@@ -9,7 +10,6 @@ from tensorflow.keras.layers import Dropout, Dense, Embedding, LSTM
 from tensorflow.keras.models import Sequential
 from keras.optimizers import Adam
 import tensorflow
-import os
 import datetime
 import unicodecsv as csv
 from io import BytesIO

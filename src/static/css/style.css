@@ -26,7 +26,12 @@
   color: white;
 }
 
-.post-comments {
-  width:10%;
-  height:20%;
+.graph-container {
+  width: 100%;
+  display:flex;
+}
+
+.graph {
+  flex: 25%;
+  padding:10%;
 }

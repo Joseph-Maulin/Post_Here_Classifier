@@ -12,6 +12,7 @@ from django.core.wsgi import get_wsgi_application
 from dotenv import load_dotenv
 from pathlib import Path
 
+
 load_dotenv(".env")
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'src.settings')

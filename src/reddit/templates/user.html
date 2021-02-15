@@ -17,10 +17,14 @@
     <h2>{{x.selftext}}</h2>
   {% endfor %}
 
-  <div
-  <div class="post-comments">
-    {% include 'post_comments.html' %}
-  <div/>
+  <div class="graph-container">
+    <div class="graph">
+      {% include 'post_comments.html' %}
+    </div>
+    <div class="graph">
+      {% include 'post_history.html' %}
+    </div>
+  </div>
 {% endif %}
 
 

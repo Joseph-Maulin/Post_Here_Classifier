@@ -10,7 +10,7 @@ from .forms.post_form import PostForm
 from .forms.user_form import UserForm
 
 # models
-from .model.Load_Model_H5 import get_model
+# from .model.Load_Model_H5 import get_model
 
 # reddit
 from .Reddit_API import get_reddit_api
@@ -70,6 +70,7 @@ def user_view(request, *args, **kwargs):
     if request.method == 'POST':
         if form.is_valid():
             r.build_comment_history_html(request.POST["user_name"])
+            r.build_post_numbers_history_html(request.POST["user_name"])
             context["posts"] = r.get_user_posts(request.POST['user_name'])
 
     return render(request, "user.html", context)
