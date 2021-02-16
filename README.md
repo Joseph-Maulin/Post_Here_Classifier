@@ -1,3 +1,8 @@
+!!! I am currently rebuilding this using Django. It should have more functionality and a much better UI. I will be hosting on google cloud in the near future, stay tuned!
+
+
+
+
 # Post_Here_Classifier
 
 
