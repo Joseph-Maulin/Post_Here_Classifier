@@ -5,29 +5,35 @@
 
 {% block content %}
 
-<form method='POST' action='/load'> {% csrf_token %}
+<form method='POST'> {% csrf_token %}
   {{ form.as_p }}
   <input id="user_button" type='submit' value="User Continue"/>
 </form>
 
 {% if posts %}
+<div class="post_container">
   <br/><br/>
-  {% for x in posts %}
-    <h2>{{x.title}}</h2>
-    <h2>{{x.selftext}}</h2>
-  {% endfor %}
+  <div class="post_data">
+    {% for x in posts %}
+      <h2>{{x.title}}</h2>
+      <h2>{{x.selftext}}</h2>
+    {% endfor %}
+  </div>
 
   <div class="graph-container">
     <div class="graph">
       {% include 'post_comments.html' %}
     </div>
+    <br>
     <div class="graph">
       {% include 'post_history.html' %}
     </div>
+    <br>
     <div class="graph">
       {% include 'subreddit_nums.html' %}
     </div>
   </div>
+</div>
 {% endif %}
 
 <script type="text/javascript">

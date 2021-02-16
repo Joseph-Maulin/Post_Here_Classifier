@@ -162,9 +162,9 @@ class Reddit_API:
         post_comments = go.Figure(barchart)
 
         post_comments.update_layout(
-            xaxis_title = "Posted",
+            xaxis_title = "",
             xaxis = dict(tickmode='array', tickvals=list(range(len(df))), ticktext=[x for x in df.created]),
-            title = "Post Data"
+            margin={"t":0, "l":0, "r":0, "b":0}
         )
 
         pio.write_html(post_comments, file="reddit/templates/post_comments.html")
@@ -194,18 +194,18 @@ class Reddit_API:
         r__pie = px.pie(reddit_numbers,
                 values='Posts',
                 names='Subreddit',
-                title='Subreddit Post Percentage -- Last 50',
                 color_discrete_sequence=px.colors.sequential.Hot,
-                hover_data=["Comments_Per_Post"]
+                hover_data=["Comments_Per_Post"],
                 )
+
         r__pie.update_traces(textposition='inside', textinfo='percent+label')
-        r__pie.update_layout(uniform_text_minsize=10, uniformtext_mode='hide')
+        r__pie.update_layout(margin={"t":0, "l":0, "r":0, "b":0},showlegend=False)
 
         post_history = go.Figure(r__pie)
 
         pio.write_html(post_history, file="reddit/templates/post_history.html")
 
-    def get_user_recent_subreddit_numbers(self, user):
+    def build_user_recent_subreddit_numbers(self, user):
         df = self.get_user_df(user, limit=20)
 
         subreddit_numbers = {}
@@ -237,7 +237,11 @@ class Reddit_API:
                      color_discrete_sequence=px.colors.sequential.Bluered)
 
         fig = go.Figure(scatter)
-        fig.update_layout(showlegend=False)
+        fig.update_layout(showlegend=False,
+                  margin={"t":10, "l":0, "r":10, "b":0},
+                  yaxis_title="",
+                  xaxis_title=""
+                  )
 
         pio.write_html(fig, file="reddit/templates/subreddit_nums.html")
 
@@ -245,7 +249,7 @@ class Reddit_API:
 
     def get_comment_numbers_subreddit(self, subreddit):
         subreddit = subreddit[2:]
-        nums = r.connection.subreddit(subreddit).top(limit=50)
+        nums = self.connection.subreddit(subreddit).top(limit=50)
 
         comments_date = {}
         for x in nums:
