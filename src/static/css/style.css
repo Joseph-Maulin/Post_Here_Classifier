@@ -38,7 +38,7 @@
 }
 
 .graph-container {
-  width: 50%;
+  width: 35%;
   float: right;
 }
 
@@ -52,6 +52,7 @@
   width : 100%;
   position: absolute;
   top: 0px;
+  right:0%;
   right:110%;
   background-color : #eb8334;
   opacity: 0.4;
@@ -62,36 +63,37 @@
   height : 100%;
   width : 100%;
   position: absolute;
+  left:0%;
   top: 0px;
   background-color : #eb6734;
-  opacity: 0.9;
+  opacity: .95;
   z-index: 2;
 }
 
 .close_left {
   right:110%;
-  animation : curtain_left_close 0.3s;
+  animation : curtain_left_close .7s;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
 }
 
 .close_right {
   left:110%;
-  animation : curtain_right_close 1.5s;
+  animation : curtain_right_close 1s;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
 }
 
 .open_left {
   right:0%;
-  animation: curtain_left_open 1.5s;
+  animation: curtain_left_open .7s;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
 }
 
 .open_right {
   left:0%;
-  animation: curtain_right_open 0.3s;
+  animation: curtain_right_open 1s;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
 }

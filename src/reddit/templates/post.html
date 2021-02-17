@@ -4,9 +4,29 @@
 
 {% block content %}
 
-<form method='POST'> {% csrf_token %}
+<div id="curtain_left"></div>
+<div id="curtain_right"></div>
+
+<form method='POST' onsubmit="close_curtains()"> {% csrf_token %}
   {{ form.as_p }}
   <input type='submit' value="Save"/>
 </form>
+
+
+
+<script type="text/javascript">
+  function close_curtains(){
+    document.getElementById("curtain_left").classList.toggle("open_left");
+    document.getElementById("curtain_right").classList.toggle("open_right");
+    document.getElementById("curtain_left").classList.toggle("close_left");
+    document.getElementById("curtain_right").classList.toggle("close_right");
+  }
+
+  $(document).ready(function(){
+      document.getElementById("curtain_left").classList.toggle("open_left");
+      document.getElementById("curtain_right").classList.toggle("open_right");
+  })
+
+</script>
 
 {% endblock %}

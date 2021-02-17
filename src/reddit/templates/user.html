@@ -5,6 +5,9 @@
 
 {% block content %}
 
+<div id="curtain_left"></div>
+<div id="curtain_right"></div>
+
 <form method='POST' onsubmit="close_curtains()"> {% csrf_token %}
   {{ form.as_p }}
   <input id="user_button" type='submit' value="User Continue"/>
@@ -35,9 +38,6 @@
   </div>
 </div>
 {% endif %}
-
-<div id="curtain_left"></div>
-<div id="curtain_right"></div>
 
 
 <script type="text/javascript">
