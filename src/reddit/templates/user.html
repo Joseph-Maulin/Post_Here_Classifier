@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<form method='POST'> {% csrf_token %}
+<form method='POST' onsubmit="close_curtains()"> {% csrf_token %}
   {{ form.as_p }}
   <input id="user_button" type='submit' value="User Continue"/>
 </form>
@@ -36,12 +36,25 @@
 </div>
 {% endif %}
 
+<div id="curtain_left"></div>
+<div id="curtain_right"></div>
+
+
 <script type="text/javascript">
-  $(function() {
-    $("#user_button").on('click', function(){
-      $("#load_screen").addclass("load_animation")
-    })
+  function close_curtains(){
+    document.getElementById("curtain_left").classList.toggle("open_left");
+    document.getElementById("curtain_right").classList.toggle("open_right");
+    document.getElementById("curtain_left").classList.toggle("close_left");
+    document.getElementById("curtain_right").classList.toggle("close_right");
+  }
+
+  $(document).ready(function(){
+      document.getElementById("curtain_left").classList.toggle("open_left");
+      document.getElementById("curtain_right").classList.toggle("open_right");
   })
+
 </script>
+
+
 
 {% endblock %}

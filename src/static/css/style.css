@@ -28,8 +28,8 @@
 
 .post_container {
   display: flex;
-  width 100%;
-  background-color: "lightblue";
+  width: 100%;
+  z-index: 0;
 }
 
 .post_data {
@@ -39,10 +39,91 @@
 
 .graph-container {
   width: 50%;
-  float:right;
+  float: right;
 }
 
 .graph {
   width: 100%;
-  height:33%;
+  height: 33%;
+}
+
+#curtain_left {
+  height : 100%;
+  width : 100%;
+  position: absolute;
+  top: 0px;
+  right:110%;
+  background-color : #eb8334;
+  opacity: 0.4;
+  z-index: 1;
+}
+
+#curtain_right {
+  height : 100%;
+  width : 100%;
+  position: absolute;
+  top: 0px;
+  background-color : #eb6734;
+  opacity: 0.9;
+  z-index: 2;
+}
+
+.close_left {
+  right:110%;
+  animation : curtain_left_close 0.3s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.close_right {
+  left:110%;
+  animation : curtain_right_close 1.5s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.open_left {
+  right:0%;
+  animation: curtain_left_open 1.5s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.open_right {
+  left:0%;
+  animation: curtain_right_open 0.3s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes curtain_left_close {
+  0% {right:110%}
+  25% {right:75%}
+  50% {right:50%}
+  75% {right:25%}
+  100% {right:0%}
+}
+
+@keyframes curtain_right_close {
+  0% {left:110%}
+  25% {left:75%}
+  50% {left:50%}
+  75% {left:25%}
+  100% {left:0%}
+}
+
+@keyframes curtain_left_open {
+  0% {right:0%}
+  25% {right:25%}
+  50% {right:50%}
+  75% {right:75%}
+  100% {right:110%}
+}
+
+@keyframes curtain_right_open {
+  0% {left:0%}
+  25% {left:25%}
+  50% {left:50%}
+  75% {left:75%}
+  100% {left:110%}
 }
