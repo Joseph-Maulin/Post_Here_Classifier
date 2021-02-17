@@ -154,7 +154,7 @@ class Reddit_API:
             y = "num_comments",
             orientation = "v",
             barmode="relative",
-            labels={"title":"Title", "num_comments":"Number of Comments", "subreddit":"Subreddit"},
+            labels={"title":"Title", "num_comments":"Comments", "subreddit":"Subreddit"},
             color_discrete_sequence=px.colors.sequential.OrRd_r,
             hover_data = ['title', 'num_comments', 'subreddit']
         )

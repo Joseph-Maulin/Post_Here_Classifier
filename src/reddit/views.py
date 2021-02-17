@@ -82,15 +82,16 @@ def reddit_test(request):
 
     response = {}
     for i, x in enumerate(r.get_user_posts("masktoobig")):
-        response[i] = []
-        response[i].append(x.title)
-        response[i].append(x.created_utc)
-        response[i].append(str(datetime.datetime.fromtimestamp(x.created_utc)))
-        response[i].append({"comments":[]})
+        response[i] = {}
+        response[i]["post_title"] = x.title
+        response[i]["post_selftext"] = x.selftext
+        response[i]["created_date"] = str(datetime.datetime.fromtimestamp(x.created_utc))
+        response[i]["comments"] = []
         for y in r.get_post_comments(x):
-            response[i][3]['comments'].append(y.body)
+            response[i]['comments'].append(y.body)
 
     return HttpResponse(json.dumps(response))
+    # return render(request, "reddit_test.html", response)
 
 
 
