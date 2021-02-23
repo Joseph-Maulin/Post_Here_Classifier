@@ -146,6 +146,7 @@ class Reddit_API:
         return df
 
     def build_comment_history_html(self, user, limit=5):
+        print("building comment history html")
         df = self.get_user_df(user, limit)
 
         barchart = px.bar(
@@ -167,10 +168,12 @@ class Reddit_API:
             margin={"t":0, "l":0, "r":0, "b":0}
         )
 
+        print("writing comment history html")
         pio.write_html(post_comments, file="reddit/templates/post_comments.html")
 
 
     def build_post_numbers_history_html(self, user, limit=50):
+        print("building post numbers html")
         df = self.get_user_df(user, limit)
 
         subreddit_numbers = {}
@@ -203,10 +206,12 @@ class Reddit_API:
 
         post_history = go.Figure(r__pie)
 
+        print("writing post numbers html")
         pio.write_html(post_history, file="reddit/templates/post_history.html")
 
     def build_user_recent_subreddit_numbers(self, user):
-        df = self.get_user_df(user, limit=20)
+        print("building subreddit numbers html")
+        df = self.get_user_df(user, limit=50)
 
         subreddit_numbers = {}
         subreddit_posts = []
@@ -243,13 +248,14 @@ class Reddit_API:
                   xaxis_title=""
                   )
 
+        print("writing subreddit numbers html")
         pio.write_html(fig, file="reddit/templates/subreddit_nums.html")
 
 
 
     def get_comment_numbers_subreddit(self, subreddit):
         subreddit = subreddit[2:]
-        nums = self.connection.subreddit(subreddit).top(limit=50)
+        nums = self.connection.subreddit(subreddit).top(limit=25)
 
         comments_date = {}
         for x in nums:

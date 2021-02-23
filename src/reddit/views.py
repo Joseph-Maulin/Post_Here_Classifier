@@ -20,6 +20,7 @@ import praw
 import os
 import datetime
 import json
+import multiprocessing
 
 
 
@@ -67,12 +68,23 @@ def user_view(request, *args, **kwargs):
         "posts" : posts
     }
 
-    if request.method == 'POST':
-        if form.is_valid():
-            r.build_comment_history_html(request.POST["user_name"])
-            r.build_post_numbers_history_html(request.POST["user_name"])
-            r.build_user_recent_subreddit_numbers(request.POST["user_name"])
-            context["posts"] = r.get_user_posts(request.POST['user_name'])
+    if request.method == 'POST' and form.is_valid():
+
+        user = request.POST["user_name"]
+
+        p1 = multiprocessing.Process(target = r.build_comment_history_html, args=[user])
+        p2 = multiprocessing.Process(target = r.build_post_numbers_history_html, args=[user])
+        p3 = multiprocessing.Process(target = r.build_user_recent_subreddit_numbers, args=[user])
+
+        p1.start()
+        p2.start()
+        p3.start()
+
+        p1.join()
+        p2.join()
+        p3.join()
+
+        context["posts"] = r.get_user_posts(request.POST['user_name'])
 
     return render(request, "user.html", context)
 
