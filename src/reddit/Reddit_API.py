@@ -8,6 +8,7 @@ import plotly.express as px
 from plotly.offline import init_notebook_mode, plot, iplot
 import pandas as pd
 import plotly.io as pio
+import multiprocessing
 
 
 class Reddit_API:
@@ -219,10 +220,20 @@ class Reddit_API:
             subreddit_numbers[x] = df[df['subreddit'] == x]['num_comments'].sum()
             subreddit_posts.append(len(df[df['subreddit'] == x]))
 
+        print("building subreddit_day_and_comment")
+        ##################################
+        # THIS IS TAKING TOO LONG? TRY TO BUILD FASTER!
+
+        # user_subs = list(subreddit_numbers.keys())
+        # subreddit_day_and_comment = {}
+        # for x in user_subs:
+        #     subreddit_day_and_comment[x] = self.get_comment_numbers_subreddit(x)
+
         user_subs = list(subreddit_numbers.keys())
-        subreddit_day_and_comment = {}
-        for x in user_subs:
-            subreddit_day_and_comment[x] = self.get_comment_numbers_subreddit(x)
+        subreddit_day_and_comment = self.build_subreddit_day_and_comment(user_subs)
+
+        #########################################
+
 
         s_d_c_data = {"subreddit":[], "date":[], "num_comments":[]}
 
@@ -233,6 +244,7 @@ class Reddit_API:
               s_d_c_data["num_comments"].append(z)
 
         s_d_c = pd.DataFrame(s_d_c_data)
+
 
         scatter = px.scatter(s_d_c,
                      x="date",
@@ -248,10 +260,38 @@ class Reddit_API:
                   xaxis_title=""
                   )
 
-        print("writing subreddit numbers html")
-        pio.write_html(fig, file="reddit/templates/subreddit_nums.html")
+        print("writing subreddit_numbers")
+        pio.write_html(fig, file="templates/subreddit_nums.html")
+        # pio.write_html(fig, file="reddit/templates/subreddit_nums.html")
 
 
+    def queue_helper(self, queue, subreddit):
+        ret = self.get_comment_numbers_subreddit(subreddit)
+        queue.put({subreddit:ret})
+
+    def build_subreddit_day_and_comment(self, user_subs):
+        q = multiprocessing.Queue()
+        processes = []
+        rets = []
+        subreddit_day_and_comment = {}
+
+        for x in user_subs:
+            p = multiprocessing.Process(target=self.queue_helper, args=(q, x))
+            processes.append(p)
+            p.start()
+
+        for p in processes:
+            ret = q.get()
+            rets.append(ret)
+
+        for p in processes:
+            p.join()
+
+        result = {}
+        for r in rets:
+            result.update(r)
+
+        return result
 
     def get_comment_numbers_subreddit(self, subreddit):
         subreddit = subreddit[2:]
@@ -284,7 +324,7 @@ if __name__ == "__main__":
 
     r = Reddit_API()
 
-    r.get_user_recent_subreddit_numbers("masktoobig")
+    r.build_user_recent_subreddit_numbers("masktoobig")
 
     # r = Reddit_API()
     #
