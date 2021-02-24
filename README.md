@@ -35,9 +35,16 @@ The posts are tokenized into word vectors and the loaded model is called to make
 
   ### reddit/templates
   Holds the templates and graph html files for web application.
+  
+  ## reddit/Reddit_API.py
+  This class controls the Reddit API (praw) to pull data from Reddit to support application.
+  
+  ## reddit/views.py
+  Controls web application routing
 
 ## test files
 These are simple Flask test files. The test_request.py requests' json parameter can be changed to test various post titles and texts.
+
 
 # Functionality
   ## Load_Model_H5.py
