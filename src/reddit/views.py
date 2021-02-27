@@ -77,7 +77,6 @@ def user_view(request, *args, **kwargs):
 
         user = request.POST["user_name"]
 
-<<<<<<< HEAD
         manager = multiprocessing.Manager()
         return_dict = manager.dict()
 
@@ -85,31 +84,18 @@ def user_view(request, *args, **kwargs):
         p2 = multiprocessing.Process(target = r.build_post_numbers_history_html, args=[user])
         p3 = multiprocessing.Process(target = r.build_user_recent_subreddit_numbers, args=[user])
         p4 = multiprocessing.Process(target = r.get_user_posts, args=[user, return_dict])
-=======
-        p1 = multiprocessing.Process(target = r.build_comment_history_html, args=[user])
-        p2 = multiprocessing.Process(target = r.build_post_numbers_history_html, args=[user])
-        p3 = multiprocessing.Process(target = r.build_user_recent_subreddit_numbers, args=[user])
->>>>>>> 43726659927263310be4ef0691d8992ff989d0fd
 
         p1.start()
         p2.start()
         p3.start()
-<<<<<<< HEAD
         p4.start()
-=======
->>>>>>> 43726659927263310be4ef0691d8992ff989d0fd
 
         p1.join()
         p2.join()
         p3.join()
-<<<<<<< HEAD
         p4.join()
 
         context["posts"] = return_dict["user_posts"]
-=======
-
-        context["posts"] = r.get_user_posts(request.POST['user_name'])
->>>>>>> 43726659927263310be4ef0691d8992ff989d0fd
 
     return render(request, "user.html", context)
 

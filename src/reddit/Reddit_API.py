@@ -15,6 +15,7 @@ class Reddit_API:
 
     def __init__(self):
         self.connection = self.set_connection()
+        self.users_pulled = {}
 
     def set_connection(self):
 
@@ -52,11 +53,15 @@ class Reddit_API:
         """
         return list(self.connection.redditor(user).comments.new(limit=limit))
 
-    def get_user_posts(self, user, limit=5):
+    def get_user_posts(self, user, return_dict, limit=5):
         """
             Get user submissions
         """
-        return list(self.connection.redditor(user).submissions.new(limit=limit))
+        posts = list(self.connection.redditor(user).submissions.new(limit=limit))
+        posts_with_comments = list(zip(posts, [self.get_post_comments(x) for x in posts]))
+
+        return_dict["user_posts"] = posts_with_comments
+        return posts_with_comments
 
     def get_post_comments(self, post, limit=10):
 
@@ -136,7 +141,7 @@ class Reddit_API:
                     "created":[],
                     "num_comments":[]})
 
-        for post in self.get_user_posts(user, limit=limit)[::-1]:
+        for post, comment in self.get_user_posts(user, {}, limit=limit)[::-1]:
             df = df.append({"title": post.title,
                           "selftext":post.selftext,
                           "subreddit":post.subreddit_name_prefixed,
@@ -167,7 +172,9 @@ class Reddit_API:
         post_comments.update_layout(
             xaxis_title = "",
             xaxis = dict(tickmode='array', tickvals=list(range(len(df))), ticktext=[x for x in df.created]),
-            margin={"t":0, "l":0, "r":0, "b":0}
+            margin={"t":0, "l":0, "r":0, "b":0},
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)'
         )
 
         print("writing comment history html")
@@ -184,14 +191,6 @@ class Reddit_API:
           subreddit_numbers[x] = df[df['subreddit'] == x]['num_comments'].sum()
           subreddit_posts.append(len(df[df['subreddit'] == x]))
 
-        # print("\n\n")
-        # print(subreddit_numbers.keys(), len(subreddit_numbers.keys()))
-        # print("\n")
-        # print(subreddit_numbers.values(), len(subreddit_numbers.values()))
-        # print("\n")
-        # print(subreddit_posts, len(subreddit_posts))
-        # print("\n\n")
-
         reddit_numbers = pd.DataFrame({"Subreddit":list(subreddit_numbers.keys()), "Comments":list(subreddit_numbers.values()), "Posts":subreddit_posts})
         reddit_numbers['Comments_Per_Post'] = reddit_numbers["Comments"]/reddit_numbers["Posts"]
         reddit_numbers['Comments_Per_Post'] = reddit_numbers['Comments_Per_Post'].apply(lambda x : round(x,2))
@@ -204,7 +203,10 @@ class Reddit_API:
                 )
 
         r__pie.update_traces(textposition='inside', textinfo='percent+label')
-        r__pie.update_layout(margin={"t":0, "l":0, "r":0, "b":0},showlegend=False)
+        r__pie.update_layout(margin = {"t":0, "l":0, "r":0, "b":0},
+                             showlegend = False,
+                             paper_bgcolor='rgba(0,0,0,0)',
+                             plot_bgcolor='rgba(0,0,0,0)')
 
         post_history = go.Figure(r__pie)
 
@@ -222,25 +224,10 @@ class Reddit_API:
             subreddit_posts.append(len(df[df['subreddit'] == x]))
 
         print("building subreddit_day_and_comment")
-<<<<<<< HEAD
-
-        user_subs = list(subreddit_numbers.keys())
-        subreddit_day_and_comment = self.build_subreddit_day_and_comment(user_subs)
-=======
-        ##################################
-        # THIS IS TAKING TOO LONG? TRY TO BUILD FASTER!
-
-        # user_subs = list(subreddit_numbers.keys())
-        # subreddit_day_and_comment = {}
-        # for x in user_subs:
-        #     subreddit_day_and_comment[x] = self.get_comment_numbers_subreddit(x)
 
         user_subs = list(subreddit_numbers.keys())
         subreddit_day_and_comment = self.build_subreddit_day_and_comment(user_subs)
 
-        #########################################
-
->>>>>>> 43726659927263310be4ef0691d8992ff989d0fd
 
         s_d_c_data = {"subreddit":[], "date":[], "num_comments":[]}
 
@@ -264,12 +251,14 @@ class Reddit_API:
         fig.update_layout(showlegend=False,
                   margin={"t":10, "l":0, "r":10, "b":0},
                   yaxis_title="",
-                  xaxis_title=""
+                  xaxis_title="",
+                  paper_bgcolor='rgba(0,0,0,0)',
+                  plot_bgcolor='rgba(0,0,0,0)'
                   )
 
         print("writing subreddit_numbers")
-        pio.write_html(fig, file="templates/subreddit_nums.html")
-        # pio.write_html(fig, file="reddit/templates/subreddit_nums.html")
+        # pio.write_html(fig, file="templates/subreddit_nums.html")
+        pio.write_html(fig, file="reddit/templates/subreddit_nums.html")
 
 
     def queue_helper(self, queue, subreddit):
@@ -331,16 +320,21 @@ if __name__ == "__main__":
 
     r = Reddit_API()
 
-    r.build_user_recent_subreddit_numbers("masktoobig")
+    # r.build_user_recent_subreddit_numbers("masktoobig")
 
     # r = Reddit_API()
     #
-    # for x in r.get_user_posts("masktoobig"):
-    #     print(x.title)
-    #     print(x.created_utc)
-    #     print(datetime.datetime.fromtimestamp(x.created_utc))
-    #     for y in r.get_post_comments(x):
-    #         print(y.body)
+    post_data = {}
+
+    r.get_user_posts("masktoobig", post_data)
+
+    for post, comments in post_data["user_posts"]:
+        print(post.title)
+        for comment in comments:
+            print(comment.author)
+            print(comment.body)
+
+    # print(f"reddit.com/{post.subreddit_name_prefixed}/comments/{post.id}/{post.title}")
 
 
     # comment = r.get_user_comments("Bloba_Fett", limit=2)[1]

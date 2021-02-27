@@ -26,6 +26,10 @@
   color: white;
 }
 
+body{
+  background-color: #cccccc;
+}
+
 #sub_pred_box a {
   text-decoration: none;
   color: inherit;
@@ -51,17 +55,20 @@
   border-style : solid;
   border-color : lightgray;
   padding : 20px 20px 20px 20px;
+  background-color: #fcfcfc;
 }
 
 #predictions_box {
   font-family: 'Newsreader', serif;
   padding:20px;
+  background-color: #fcfcfc;
 }
 
 #sub_pred_box {
   border-style : solid;
   border-color : lightgray;
   padding : 20px 20px 20px 20px;
+  background-color: #fcfcfc;
 }
 
 .post_container {
@@ -73,6 +80,61 @@
 .post_data {
   width: 50%;
   float:left;
+  padding: 0% 0% 0% 0%;
+}
+
+.post_data div:hover{
+  opacity:1;
+}
+
+.post {
+  opacity:.75;
+  margin-left: 5%;
+  margin-right: 5%;
+  background-color: #fcfcfc;
+}
+
+.post_head {
+  font-size: 16px;
+  margin:10% 0% 10% 0%;
+}
+
+.post_head h6{
+  color:#2dad13;
+}
+
+.post_head h6:hover{
+  text-decoration:underline;
+}
+
+.post_head #post_text{
+  margin-top:-20px;
+}
+
+.post_head a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.post_comments {
+  margin:-5% 0% 0% 5%;
+  padding:0% 0% 0% 0%;
+}
+
+.post_comment {
+  padding:0% 0% 0% 0%;
+}
+
+.post_comment h6{
+  color:#2dad13;
+}
+
+.post_comment h6:hover{
+  text-decoration:underline;
+}
+
+.post_comment h3{
+  margin-top:-25px;
 }
 
 .graph-container {
@@ -87,8 +149,8 @@
 }
 
 #curtain_left {
-  height : 100%;
-  width : 100%;
+  height : 9999px;
+  width : 9999px;
   position: absolute;
   top: 0px;
   right:0%;
@@ -99,8 +161,8 @@
 }
 
 #curtain_right {
-  height : 100%;
-  width : 100%;
+  height : 9999px;
+  width : 9999px;
   position: absolute;
   left:0%;
   top: 0px;

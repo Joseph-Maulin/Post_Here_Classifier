@@ -17,9 +17,30 @@
 <div class="post_container">
   <br/><br/>
   <div class="post_data">
-    {% for x in posts %}
-      <h2>{{x.title}}</h2>
-      <h2>{{x.selftext}}</h2>
+    {% for post, comments in posts %}
+      <div class="post">
+        <div class="post_head">
+          <a href="https://www.reddit.com/user/{{post.author}}" target="_blank">
+            <h6>u/{{post.author}}</h6>
+          </a>
+          <div id="post_text">
+            <a href="https://reddit.com/{{post.subreddit_name_prefixed}}/comments/{{post.id}}/{{post.title}}" target="_blank">
+              <h2>{{post.title}}</h2>
+              <h2>{{post.selftext}}</h2>
+            </a>
+          </div>
+        </div>
+        <div class="post_comments">
+          {% for comment in comments %}
+            <div class="post_comment">
+              <a href="https://www.reddit.com/user/{{post.author}}" target="_blank">
+                <h6>u/{{comment.author}}</h6>
+              </a>
+              <h3>{{comment.body}}</h3>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
     {% endfor %}
   </div>
 
