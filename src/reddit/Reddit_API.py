@@ -222,9 +222,25 @@ class Reddit_API:
             subreddit_posts.append(len(df[df['subreddit'] == x]))
 
         print("building subreddit_day_and_comment")
+<<<<<<< HEAD
 
         user_subs = list(subreddit_numbers.keys())
         subreddit_day_and_comment = self.build_subreddit_day_and_comment(user_subs)
+=======
+        ##################################
+        # THIS IS TAKING TOO LONG? TRY TO BUILD FASTER!
+
+        # user_subs = list(subreddit_numbers.keys())
+        # subreddit_day_and_comment = {}
+        # for x in user_subs:
+        #     subreddit_day_and_comment[x] = self.get_comment_numbers_subreddit(x)
+
+        user_subs = list(subreddit_numbers.keys())
+        subreddit_day_and_comment = self.build_subreddit_day_and_comment(user_subs)
+
+        #########################################
+
+>>>>>>> 43726659927263310be4ef0691d8992ff989d0fd
 
         s_d_c_data = {"subreddit":[], "date":[], "num_comments":[]}
 
