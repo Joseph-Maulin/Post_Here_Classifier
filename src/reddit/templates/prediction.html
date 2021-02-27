@@ -1,0 +1,51 @@
+
+
+
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div id="curtain_left"></div>
+<div id="curtain_right"></div>
+
+<div id="post_display">
+  <div id="post_box">
+    <h2>{{post_title}}</h2>
+
+    {% if post_text %}
+      <h2>{{post_text}}</h2>
+    {% endif %}
+  </div>
+
+  <br/>
+
+  <div id="predictions_box">
+    {% for x, y in pred %}
+        <div id="sub_pred_box">
+          <a href="https://reddit.com/r/{{x}}" target="_blank">
+            <h3 id="subreddit_name">r/{{x}}</h3>
+          </a>
+          <h3>{{y}}</h3>
+        </div>
+      <br/>
+    {% endfor %}
+  </div>
+</div>
+
+<script type="text/javascript">
+  function close_curtains(){
+    document.getElementById("curtain_left").classList.toggle("open_left");
+    document.getElementById("curtain_right").classList.toggle("open_right");
+    document.getElementById("curtain_left").classList.toggle("close_left");
+    document.getElementById("curtain_right").classList.toggle("close_right");
+  }
+
+  $(document).ready(function(){
+      document.getElementById("curtain_left").classList.toggle("open_left");
+      document.getElementById("curtain_right").classList.toggle("open_right");
+  })
+
+</script>
+
+{% endblock %}

@@ -26,6 +26,44 @@
   color: white;
 }
 
+#sub_pred_box a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#sub_pred_box a:hover {
+  color:#eb6734;
+}
+
+#subreddit_name {
+  padding : 10px, 10px, 10px, 10px;
+  background-color: #edebeb;
+}
+
+#post_display {
+  position: absolute;
+  left:10%;
+  width:60%;
+}
+
+#post_box {
+  font-family: 'Newsreader', serif;
+  border-style : solid;
+  border-color : lightgray;
+  padding : 20px 20px 20px 20px;
+}
+
+#predictions_box {
+  font-family: 'Newsreader', serif;
+  padding:20px;
+}
+
+#sub_pred_box {
+  border-style : solid;
+  border-color : lightgray;
+  padding : 20px 20px 20px 20px;
+}
+
 .post_container {
   display: flex;
   width: 100%;
@@ -40,6 +78,7 @@
 .graph-container {
   width: 35%;
   float: right;
+  height:100%;
 }
 
 .graph {

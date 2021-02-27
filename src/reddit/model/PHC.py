@@ -4,11 +4,11 @@ import re
 from collections import Counter
 import numpy as np
 from sklearn.model_selection import train_test_split
-from keras.preprocessing import sequence
+from tensorflow.keras.preprocessing import sequence
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.layers import Dropout, Dense, Embedding, LSTM
 from tensorflow.keras.models import Sequential
-from keras.optimizers import Adam
+from tensorflow.keras.optimizers import Adam
 import tensorflow
 import datetime
 import unicodecsv as csv

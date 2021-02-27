@@ -4,7 +4,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
 import tensorflow
-import keras
+import tensorflow.keras as keras
 from tensorflow.keras.preprocessing import sequence
 import unicodecsv as csv
 from io import BytesIO
