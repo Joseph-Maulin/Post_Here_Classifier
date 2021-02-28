@@ -1,8 +1,5 @@
 
 .env
-<<<<<<< HEAD
 environment
 post_here_classifier.h5
-=======
 venv
->>>>>>> 43726659927263310be4ef0691d8992ff989d0fd

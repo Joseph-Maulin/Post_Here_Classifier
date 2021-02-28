@@ -71,6 +71,15 @@ class Reddit_API:
         post.comment_limit = str(limit)
         for y in post.comments:
             if isinstance(y, praw.models.reddit.comment.Comment):
+                body = []
+                for word in y.body.split(" "):
+                    if len(word)>70:
+                        mid = len(word)//2
+                        body.append(word[:mid])
+                        body.append(word[mid:])
+                    else:
+                        body.append(word)
+                y.body = " ".join(body)
                 comments.append(y)
 
         return comments

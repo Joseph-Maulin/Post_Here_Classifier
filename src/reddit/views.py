@@ -100,6 +100,7 @@ def user_view(request, *args, **kwargs):
     return render(request, "user.html", context)
 
 
+
 def reddit_test(request):
     r = get_reddit_api()
 
