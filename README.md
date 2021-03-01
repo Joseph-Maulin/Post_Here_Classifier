@@ -1,5 +1,7 @@
 Project on google cloud: 
   https://post-here-classi-1612563081759.uc.r.appspot.com/
+  
+Note : Still looking to make a few changes, but this is the base project.
 
 It uses an LSTM nueral network to train on reddit post data to predict to which subreddit a post would best fit. This will build over time as new post data will be trained for the model. It will also contain user post data to track recent user activity and post metrics.
 
