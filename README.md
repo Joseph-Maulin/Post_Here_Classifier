@@ -1,7 +1,5 @@
-!!! I am currently rebuilding this using Django and praw (the Reddit API). It should have more functionality and a much better UI. I will be hosting on google cloud in the near future, stay tuned!
-
-
-This readme is not current, but gives an idea of the Machine Learning side of the project. 
+Project on google cloud: 
+  https://post-here-classi-1612563081759.uc.r.appspot.com/
 
 It uses an LSTM nueral network to train on reddit post data to predict to which subreddit a post would best fit. This will build over time as new post data will be trained for the model. It will also contain user post data to track recent user activity and post metrics.
 
