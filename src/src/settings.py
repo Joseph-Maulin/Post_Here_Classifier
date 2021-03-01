@@ -120,7 +120,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-# STATIC_URL = '"https://storage.googleapis.com/post-here-classi-1612563081759.appspot.com/"'
+STATIC_URL = "https://storage.googleapis.com/post-here-classi-1612563081759.appspot.com/"
 
 STATICFILES_DIRS = [
     str(os.path.join(BASE_DIR, 'static'))
