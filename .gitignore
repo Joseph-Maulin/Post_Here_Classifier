@@ -1,5 +1,6 @@
 
 .env
+env
 environment
 post_here_classifier.h5
 venv
