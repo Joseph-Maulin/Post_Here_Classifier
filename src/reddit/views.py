@@ -10,7 +10,7 @@ from .forms.post_form import PostForm
 from .forms.user_form import UserForm
 
 # models
-from .model.Load_Model_H5 import get_model
+# from .model.Load_Model_H5 import get_model
 
 # reddit
 from .Reddit_API import get_reddit_api
@@ -95,6 +95,8 @@ def user_view(request, *args, **kwargs):
         p3.join()
         p4.join()
 
+        if not return_dict["user_posts"]:
+            context["user_found"] = False
         context["posts"] = return_dict["user_posts"]
 
     return render(request, "user.html", context)

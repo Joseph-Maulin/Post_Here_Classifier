@@ -13,36 +13,44 @@
   <input id="user_button" type='submit' value="User Continue"/>
 </form>
 
+{% if user_found == False %}
+<h2 id="user_not_found_response">User not found</h2>
+{% endif %}
+
 {% if posts %}
 <div class="post_container">
   <br/><br/>
   <div class="post_data">
     {% for post, comments in posts %}
       <div class="post">
-        <div class="post_head">
-          <div class="post_labels">
-            <a href="https://www.reddit.com/user/{{post.author}}" target="_blank">
-              <h6>u/{{post.author}}</h6>
-            </a>
-            <a style="float:right;" href="https://reddit.com/{{post.subreddit_name_prefixed}}" target="_blank">
-              <h6>{{post.subreddit_name_prefixed}}</h6>
-            </a>
-          </div>
-          <div id="post_text">
-            <a href="https://reddit.com/{{post.subreddit_name_prefixed}}/comments/{{post.id}}/{{post.title}}" target="_blank">
+
+        <div class="post_head" style="padding-left:5%; padding-right:5%;">
+          <div class="post_info" style="margin-top:-25px;">
+            <div style="display:flex;" class="post_labels">
+              <a style="flex:left; padding-right:10px;" href="https://www.reddit.com/user/{{post.author}}" target="_blank">
+                <h6>u/{{post.author}}</h6>
+              </a>
+              <a style="flex:left;" href="https://reddit.com/{{post.subreddit_name_prefixed}}" target="_blank">
+                <h6>{{post.subreddit_name_prefixed}}</h6>
+              </a>
+            </div>
+            <h2 style="margin-top:-25px">{{post.title}}</h2>
+            <h2>{{post.selftext}}</h2>
+            <!-- <a href="https://reddit.com/{{post.subreddit_name_prefixed}}/comments/{{post.id}}/{{post.title}}" target="_blank">
               <h2>{{post.title}}</h2>
               <h2>{{post.selftext}}</h2>
-            </a>
+            </a> -->
           </div>
         </div>
-        <div class="post_comments">
+
+        <div class="post_comments" style="padding-left:8%; padding-right:5%; padding-bottom:5%;">
           {% for comment in comments %}
             <div class="post_comment">
-              <div class="comment_labels">
-                <a href="https://www.reddit.com/user/{{post.author}}" target="_blank">
+              <div style="display:flex;" class="comment_labels">
+                <a style="flex:left; padding-right:10px;" href="https://www.reddit.com/user/{{post.author}}" target="_blank">
                   <h6>u/{{comment.author}}</h6>
                 </a>
-                <a style="float:right;" href="https://reddit.com/{{post.subreddit_name_prefixed}}" target="_blank">
+                <a style="flex:left;" href="https://reddit.com/{{post.subreddit_name_prefixed}}" target="_blank">
                   <h6>{{post.subreddit_name_prefixed}}</h6>
                 </a>
               </div>
@@ -50,6 +58,7 @@
             </div>
           {% endfor %}
         </div>
+
       </div>
     {% endfor %}
   </div>

@@ -57,10 +57,16 @@ class Reddit_API:
         """
             Get user submissions
         """
-        posts = list(self.connection.redditor(user).submissions.new(limit=limit))
-        posts_with_comments = list(zip(posts, [self.get_post_comments(x) for x in posts]))
+        try:
+            posts = list(self.connection.redditor(user).submissions.new(limit=limit))
+            posts_with_comments = list(zip(posts, [self.get_post_comments(x) for x in posts]))
 
-        return_dict["user_posts"] = posts_with_comments
+            return_dict["user_posts"] = posts_with_comments
+
+        except:
+            posts_with_comments = []
+            return_dict["user_posts"] = posts_with_comments
+
         return posts_with_comments
 
     def get_post_comments(self, post, limit=10):
@@ -171,17 +177,18 @@ class Reddit_API:
             y = "num_comments",
             orientation = "v",
             barmode="relative",
-            labels={"title":"Title", "num_comments":"Comments", "subreddit":"Subreddit"},
+            labels={"num_comments":"Comments", "subreddit":"Subreddit"},
             color_discrete_sequence=px.colors.sequential.OrRd_r,
-            hover_data = ['title', 'num_comments', 'subreddit']
+            hover_data = ['num_comments', 'subreddit']
         )
 
         post_comments = go.Figure(barchart)
 
         post_comments.update_layout(
+            title = "Comments For Last 5 User Posts",
             xaxis_title = "",
             xaxis = dict(tickmode='array', tickvals=list(range(len(df))), ticktext=[x for x in df.created]),
-            margin={"t":0, "l":0, "r":0, "b":0},
+            margin={"t":30, "l":0, "r":0, "b":0},
             paper_bgcolor='rgba(0,0,0,0)',
             plot_bgcolor='rgba(0,0,0,0)'
         )
@@ -208,14 +215,15 @@ class Reddit_API:
                 values='Posts',
                 names='Subreddit',
                 color_discrete_sequence=px.colors.sequential.Hot,
-                hover_data=["Comments_Per_Post"],
+                hover_data=["Comments_Per_Post"]
                 )
 
         r__pie.update_traces(textposition='inside', textinfo='percent+label')
-        r__pie.update_layout(margin = {"t":0, "l":0, "r":0, "b":0},
+        r__pie.update_layout(margin = {"t":30, "l":0, "r":0, "b":0},
                              showlegend = False,
                              paper_bgcolor='rgba(0,0,0,0)',
-                             plot_bgcolor='rgba(0,0,0,0)')
+                             plot_bgcolor='rgba(0,0,0,0)',
+                             title = "Post Breakdown By Subreddit")
 
         post_history = go.Figure(r__pie)
 
@@ -258,11 +266,12 @@ class Reddit_API:
 
         fig = go.Figure(scatter)
         fig.update_layout(showlegend=False,
-                  margin={"t":10, "l":0, "r":10, "b":0},
+                  margin={"t":40, "l":0, "r":10, "b":0},
                   yaxis_title="",
                   xaxis_title="",
                   paper_bgcolor='rgba(0,0,0,0)',
-                  plot_bgcolor='rgba(0,0,0,0)'
+                  plot_bgcolor='rgba(0,0,0,0)',
+                  title="Top 25 Posts For Recent Subreddits"
                   )
 
         print("writing subreddit_numbers")

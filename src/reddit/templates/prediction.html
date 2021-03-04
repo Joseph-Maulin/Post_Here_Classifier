@@ -9,6 +9,10 @@
 <div id="curtain_left"></div>
 <div id="curtain_right"></div>
 
+<form method='GET' onsubmit="close_curtains()"> {% csrf_token %}
+  <input type='submit' value="New prediction"/>
+</form>
+
 <div id="post_display">
   <div id="post_box">
     <h2>{{post_title}}</h2>

@@ -58,6 +58,11 @@ body{
   background-color: #fcfcfc;
 }
 
+#user_not_found_response {
+  font-family: 'Newsreader', serif;
+  color: #eb6734;
+}
+
 #predictions_box {
   font-family: 'Newsreader', serif;
   padding:20px;
@@ -70,6 +75,7 @@ body{
   padding : 20px 20px 20px 20px;
   background-color: #fcfcfc;
 }
+
 
 .post_container {
   display: flex;
