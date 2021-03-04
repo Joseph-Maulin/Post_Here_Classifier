@@ -53,8 +53,8 @@ The posts are tokenized into word vectors and the loaded model is called to make
 
 
 # Additional Files to download for Post_Here_Classifier due to file size constraints
-  ## Data used to run model in PHC.py (reddit_posts_4M.csv)
-  Place in /data subdirectory -------> https://drive.google.com/file/d/1xSlIorTFBQC-wJ2lHBZNtyqTJ1Iy9-bl/view?usp=sharing
+  ## Data used to train the model in PHC.py (reddit_posts_4M.csv)
+                      -------> https://drive.google.com/file/d/1xSlIorTFBQC-wJ2lHBZNtyqTJ1Iy9-bl/view?usp=sharing
 
   ## Saved model for loading in Load_Model_H5.py (post_here_classifier.h5)
-  Place in /model subdirectory ------> https://drive.google.com/file/d/1hGkHbrTXhsYSiO4du5uRtHybwPCCsrne/view?usp=sharing
+  Place in “src/reddit/model/model/” subdirectory ------> https://drive.google.com/file/d/1hGkHbrTXhsYSiO4du5uRtHybwPCCsrne/view?usp=sharing
