@@ -19,17 +19,10 @@ class Reddit_API:
 
     def set_connection(self):
 
-        # for quick testing
-        REDDIT_CLIENT_ID = "Xt1K7W8ENUVSww"
-        REDDIT_CLIENT_SECRET = "ydXINm5TPFPbKJNpAhQ1h_FBGTQ"
-        return praw.Reddit(client_id = REDDIT_CLIENT_ID,
-                           client_secret = REDDIT_CLIENT_SECRET,
+        # print(f"client_id: {os.getenv('REDDIT_CLIENT_ID')}")
+        return praw.Reddit(client_id = os.getenv("REDDIT_CLIENT_ID"),
+                           client_secret = os.getenv("REDDIT_CLIENT_SECRET"),
                            user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36')
-
-        # # print(f"client_id: {os.getenv('REDDIT_CLIENT_ID')}")
-        # return praw.Reddit(client_id = os.getenv("REDDIT_CLIENT_ID"),
-        #                    client_secret = os.getenv("REDDIT_CLIENT_SECRET"),
-        #                    user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36')
 
     def get_reddit_top_k_posts(self, k=1000):
         """
