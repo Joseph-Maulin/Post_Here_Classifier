@@ -1,7 +1,7 @@
 Project on google cloud: 
   https://post-here-classi-1612563081759.uc.r.appspot.com/
   
-Note : I am no longer paying Google Cloud to host the project. You can host it locally with instructions below:
+Note : I am no longer paying Google Cloud to host the project. It can be hosted locally with instructions below. Docker image will be created soon.
 
 # Local Environment Setup
   ## a. The repository will need to be downloaded into the file of your choice. The link is here: “https://github.com/Joseph-Maulin/Post_Here_Classifier.git”. You will need to enable git for your terminal or command line. The documentation for setting up git for your command or terminal can be found here: “https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html”.
