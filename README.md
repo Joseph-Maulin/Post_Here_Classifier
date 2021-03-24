@@ -3,26 +3,26 @@ Project on google cloud:
   
 Note : I am no longer paying Google Cloud to host the project. You can host it locally with instructions below:
 
-Local Environment Setup
-  a. The repository will need to be downloaded into the file of your choice. The link is here: “https://github.com/Joseph-Maulin/Post_Here_Classifier.git”. You will need to enable git for your terminal or command line. The documentation for setting up git for your command or terminal can be found here: “https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html”.
+# Local Environment Setup
+  ## a. The repository will need to be downloaded into the file of your choice. The link is here: “https://github.com/Joseph-Maulin/Post_Here_Classifier.git”. You will need to enable git for your terminal or command line. The documentation for setting up git for your command or terminal can be found here: “https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html”.
   
-  b. Once git is installed you will run this command to download the repository to your local environment.
-    i. git clone https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html
+  ## b. Once git is installed you will run this command to download the repository to your local environment.
+    ### i. git clone https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html
 
-  c. You will need to get the model for the application.
-    i.   Download the model here: “https://drive.google.com/file/d/1hGkHbrTXhsYSiO4du5uRtHybwPCCsrne/view?usp=sharing” 
-    ii.  Save the model as “post_here_classifier.h5”
-    iii. Place the “post_here_classifier.h5” in the “src/reddit/model/model/” subdirectory.
+  ## c. You will need to get the model for the application.
+    ### i.   Download the model here: “https://drive.google.com/file/d/1hGkHbrTXhsYSiO4du5uRtHybwPCCsrne/view?usp=sharing” 
+    ### ii.  Save the model as “post_here_classifier.h5”
+    ### iii. Place the “post_here_classifier.h5” in the “src/reddit/model/model/” subdirectory.
 
-  d. Next set up a virtual environment for the application.
-    i.  In the command line cd into the project directory.
-    ii. Create a new virtual environment and install the requirements
-      1. If you do not have Python installed, download it here: “https://www.python.org/downloads/” 
-      2. Use the command “pip install virtualenv” in the terminal or command line. 
-      3. Windows command line operations
-        a. python -m venv environment
-        b. environment\Scripts\activate
-        c. pip install -r requirements.txt
+  ## d. Next set up a virtual environment for the application.
+    ### i.  In the command line cd into the project directory.
+    ### ii. Create a new virtual environment and install the requirements
+      #### 1. If you do not have Python installed, download it here: “https://www.python.org/downloads/” 
+      #### 2. Use the command “pip install virtualenv” in the terminal or command line. 
+      #### 3. Windows command line operations
+        ##### a. python -m venv environment
+        ##### b. environment\Scripts\activate
+        ##### c. pip install -r requirements.txt
       4. Mac or Linux
         a. virtualenv environment
         b. source venv/bin/activate
